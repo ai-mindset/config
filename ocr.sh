@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+# Exit on error
+set -e
+
 # Usage: ./ocr.sh image.jpg
 
 # From https://github.com/bytefer/ollama-ocr/blob/main/src/config.ts#L6C43-L11C68
