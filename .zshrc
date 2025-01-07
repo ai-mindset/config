@@ -114,6 +114,12 @@ LD_LIBRARY_PATH=/usr/local/lib
 # Appimages
 export PATH="$HOME/AppImages:$PATH"
 
+# Tmux
+export TMUX_TMPDIR=/tmp
+
+# System-wide editor
+export EDITOR="nvim"
+
 ## Julia
 # >>> juliaup initialize >>>
 # !! Contents within this block are managed by juliaup !!
@@ -249,7 +255,6 @@ vid_total_dur_hrs() {
         awk '{s+=$0} END {print s/3600}'
 }
 alias c="xclip -selection clipboard"
-export EDITOR="nvim"
 alias rm_docker_installation="sudo dnf remove docker \
                   docker-client \
                   docker-client-latest \
