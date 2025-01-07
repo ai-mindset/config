@@ -115,7 +115,8 @@ LD_LIBRARY_PATH=/usr/local/lib
 export PATH="$HOME/AppImages:$PATH"
 
 # Tmux
-export TMUX_TMPDIR=/tmp
+[[ -d ~/.tmux ]] || mkdir ~/.tmux
+alias tmux='tmux -S ~/.tmux/dev'
 
 # System-wide editor
 export EDITOR="nvim"
