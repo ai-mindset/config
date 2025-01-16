@@ -2,7 +2,7 @@
 
 # Source: https://bashscript.net/bash-script-as-a-simple-to-do-list/
 
-TODO_FILE="$HOME/todo.txt"
+TODO_FILE="$HOME/todo.md"
 
 function show_help {
     echo "Usage: todo.sh [command] [task]"
@@ -17,7 +17,8 @@ function add_task {
         echo "Error: Task cannot be empty."
         exit 1
     fi
-    echo "$1" >> "$TODO_FILE"
+    local timestamp=$(date -u +"%Y-%m-%d")
+    echo "📌 $1 🗓️ $timestamp" >> "$TODO_FILE"
     echo "Added task: $1"
 }
 
