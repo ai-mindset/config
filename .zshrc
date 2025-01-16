@@ -121,6 +121,22 @@ alias tmux='tmux -S ~/.tmux/dev'
 # System-wide editor
 export EDITOR="nvim"
 
+## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
+log_task() {
+   # Define path to your log file
+    local log_file="$HOME/Documents/work_log.txt"
+
+   # Get current ISO 8601 timestamp
+   local timestamp=$(date -u +"%Y-%m-%d")
+
+    # Append timestamp and message to log file
+    echo "$timestamp $*" >> "$log_file"
+
+    # Confirm that task was added
+    echo "Logged: $timestamp $*"
+}
+## log tasks
+
 ## Julia
 # >>> juliaup initialize >>>
 # !! Contents within this block are managed by juliaup !!
