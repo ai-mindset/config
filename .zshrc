@@ -308,4 +308,4 @@ export TERM=xterm-256color # For Tmux to show correct colours
 ## Clojure installation path
 
 # Print todo list
-todo.sh list
+todo.sh pending 
