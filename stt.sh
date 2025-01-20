@@ -8,11 +8,11 @@
 #   Transcribes video/audio files using whisper-faster-xxl with optimised settings
 #
 # Usage:
-#   ./transcribe.sh <input_file>
+#   ./stt.sh <input_file>
 #   
 # Example:
-#   ./transcribe.sh video.mp4
-#   ./transcribe.sh /path/to/video.mp4
+#   ./stt.sh video.mp4
+#   ./stt.sh /path/to/video.mp4
 #
 # Requirements:
 #   - whisper-faster-xxl must be installed and in your PATH
@@ -47,7 +47,7 @@ whisper-faster-xxl "$1" \
     --model medium \
     --language en \
     --word_timestamps False \
-    --task transcribe \
+    --task stt \
     --output_format txt \
     --output_dir "$file_path" \
     --vad_filter True \
