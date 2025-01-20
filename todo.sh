@@ -2,6 +2,47 @@
 
 # Based on https://bashscript.net/bash-script-as-a-simple-to-do-list/
 
+# ==================================
+# Emoji To-Do List Manager
+# ==================================
+#
+# Description:
+#   Manages a markdown-based todo list with emoji indicators, timestamps,
+#   and autocompletion support for zsh
+#
+# Usage:
+#   ./todo.sh <command> [task]
+#   
+# Commands:
+#   add [task]     Add a task (supports [TASK] and [IDEA] prefixes)
+#   list           List all tasks
+#   remove [task]  Remove a specific task
+#   pending        List unfinished tasks (without ✅)
+#   complete       List completed tasks (with ✅)
+#
+# Examples:
+#   ./todo.sh add "Buy groceries"
+#   ./todo.sh add "[TASK] Call dentist"
+#   ./todo.sh add "[IDEA] Learn Python"
+#
+# Requirements:
+#   - zsh shell environment
+#   - write permissions in $HOME directory
+#   - grep with regex support
+#   - sed for text manipulation
+#
+# Special Features:
+#   - Automatic tag conversion: [TASK] → ☐, [IDEA] → 💡
+#   - UTC timestamps for all tasks (🗓️)
+#   - zsh autocompletion support (--generate-completions)
+#   - Tasks stored in ~/todo.md
+#
+# Note: 
+#   - Run with --generate-completions to set up zsh autocompletion
+#   - Task timestamps use UTC timezone
+#   - Empty tasks are not allowed
+# ==================================
+
 # Generate completions
 if [[ "$1" == "--generate-completions" ]]; then
     completion_dir="${HOME}/.zsh"

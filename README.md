@@ -10,6 +10,9 @@ Transcribe video or audio. Requires [whisper-standalone-win](https://github.com/
 ## todo.sh[^1]
 Create a simple to-do list. `.zshrc` already contains a simple function ([thanks to Chris Albon](https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p)) that does a simpler form of what `todo.sh` can do. It's always a good idea to [keep a work log](https://www.youtube.com/watch?v=HiF83i1OLOM).
 
+## ollmpeg.sh  
+Generate `ffmpeg` commands using [ollama](https://ollama.com/) with [granite3.1-dense:8b](https://www.ollama.com/library/granite3.1-dense). Based on [llmpeg](https://github.com/jjcm/llmpeg)
+
 ## `.tmux.conf`
 [Tmux](https://github.com/tmux/tmux/wiki) colour configuration for showing colour palettes accurately when using Neovim in a tmux session. You can safe it under `$HOME` 
 
