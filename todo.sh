@@ -81,11 +81,11 @@ TODO_FILE="$HOME/todo.md"
 function show_help {
     echo "Usage: todo.sh [command] [task]"
     echo "Commands:"
-    echo "  add [task]     Add a task"
-    echo "  list           List all tasks"
-    echo "  remove [task]  Remove a task"
-    echo "  pending        List unfinished tasks"
-    echo "  complete       List completed tasks"
+    echo "  add, a [task]      Add a task"
+    echo "  list, l            List all tasks"
+    echo "  remove, rm [task]  Remove a task"
+    echo "  pending, p         List unfinished tasks"
+    echo "  complete, c        List completed tasks"
 }
 
 function add_task {
@@ -149,24 +149,24 @@ function remove_task {
     fi
 
     escaped_task=$(printf '%s\n' "$1" | sed 's/[]\/$*.^|[]/\\&/g')
-    sed -i "/^${escaped_task}$/d" "$TODO_FILE"
-    echo "Removed task: $1"
+   sed -i "s/^${escaped_task}$/❌ ~~${escaped_task}~~/" "$TODO_FILE"
+    echo "Strike through task: $1"
 }
 
 case "$1" in
-    add)
+    add|a)
         add_task "$2"
         ;;
-    list)
+    list|l)
         list_tasks
         ;;
-    remove)
+    remove|rm)
         remove_task "$2"
         ;;
-    pending)
+    pending|p)
         pending_tasks
         ;;
-    complete)
+    complete|c)
         complete_tasks
         ;;
     *)
