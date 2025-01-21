@@ -7,6 +7,9 @@ Small shell script that extracts text from images using "Llama 3.2". Requires [o
 ## stt.sh[^1] 
 Transcribe video or audio. Requires [whisper-standalone-win](https://github.com/Purfview/whisper-standalone-win)
 
+## tts.sh  
+Convert text to speech using voice models. Requires [Piper TTS](https://github.com/rhasspy/piper) and optionally [ffmpeg](https://ffmpeg.org/) for MP3 conversion.
+
 ## todo.sh
 Create a simple to-do list. `.zshrc` already contains a simple function ([thanks to Chris Albon](https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p)) that does a simpler form of what `todo.sh` can do. It's always a good idea to [keep a work log](https://www.youtube.com/watch?v=HiF83i1OLOM).
 
