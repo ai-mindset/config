@@ -20,7 +20,7 @@ Generate `ffmpeg` commands using [ollama](https://ollama.com/) with [granite3.1-
 [Tmux](https://github.com/tmux/tmux/wiki) colour configuration for showing colour palettes accurately when using Neovim in a tmux session. You can safe it under `$HOME` 
 
 ## `.zshrc`
-Zsh configuration. Requires [Oh My Zsh](https://ohmyz.sh/). It contains configuration for [asdf version manager](https://github.com/asdf-vm/asdf), [Julia](https://github.com/asdf-vm/asdf), [uv](https://docs.astral.sh/uv/) and [Clojure](https://clojure.org/). It should be saved under `$HOME`
+Zsh configuration. Requires [Oh My Zsh](https://ohmyz.sh/) and (optionally) [Glow](https://github.com/charmbracelet/glow). It contains configuration for [asdf version manager](https://github.com/asdf-vm/asdf), [Julia](https://github.com/asdf-vm/asdf), [uv](https://docs.astral.sh/uv/) and [Clojure](https://clojure.org/). It should be saved under `$HOME`
 
 ## `kitty.conf` 
 [kitty](https://sw.kovidgoyal.net/kitty/) terminal. Requires [Fira Code](https://github.com/tonsky/FiraCode). It can be saved under `$HOME/.config/kitty/` or `$HOME`
