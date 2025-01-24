@@ -43,36 +43,41 @@
 #   - Empty tasks are not allowed
 # ==================================
 
-# Generate completions
+# Generate autocompletions
 if [[ "$1" == "--generate-completions" ]]; then
     completion_dir="${HOME}/.zsh"
-    
-    # Create directories if they don't exist
     [[ -d "$completion_dir" ]] || mkdir -p "$completion_dir"
     
     cat > "${completion_dir}/_todo" <<EOF
 #compdef todo.sh
 
-_todo() {
-    local -a commands
+function _todo {
+    local commands
     commands=(
-$(grep -A1 "case.*in" "$0" | grep -o '"[^"]*")' | sed 's/)//' | while read cmd; do
-    [[ "$cmd" != "*" ]] && echo "        '$cmd:$(grep -A1 "^    $cmd)" "$0" | tail -n1 | cut -d'"' -f2)'"
-done)
+        'add:Add a task'
+        'a:Add a task'
+        'list:List all tasks'
+        'l:List all tasks'
+        'remove:Remove a task'
+        'rm:Remove a task'
+        'pending:List unfinished tasks'
+        'p:List unfinished tasks'
+        'complete:List completed tasks'
+        'c:List completed tasks'
     )
-    _describe 'command' commands
+    
+    if (( CURRENT == 2 )); then
+        _describe -t commands 'todo.sh commands' commands
+    fi
 }
 
 _todo "\$@"
 EOF
     echo "Completion file generated at ${completion_dir}/_todo"
     
-    # If fpath line isn't in .zshrc, add it
-    if ! grep -q "^fpath=(~/.zsh .zshrc"; then
-        echo -e "\nfpath=(~/.zsh \$fpath)\nautoload -U compinit && compinit" >> "${HOME}/.zshrc"
-        echo "Added completion configuration to .zshrc. Please restart your shell or run 'source ~/.zshrc'"
+    if ! grep -q "^fpath=(~/.zsh" "${HOME}/.zshrc"; then
+        echo 'fpath=(~/.zsh $fpath)\nautoload -U compinit && compinit' >> "${HOME}/.zshrc"
     fi
-    
     exit 0
 fi
 
