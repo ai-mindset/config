@@ -122,7 +122,7 @@ function list_tasks {
 function pending_tasks {
     if [[ -s "$TODO_FILE" ]]; then
         echo "Pending Tasks:"
-        grep -v "✅" "$TODO_FILE" || echo "No pending tasks."
+        grep -vE "✅|❌" "$TODO_FILE" || echo "No pending tasks."
     else
         echo "No tasks found."
     fi
