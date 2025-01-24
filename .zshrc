@@ -75,7 +75,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(gitfast colored-man-pages asdf) # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
+plugins=(gitfast colored-man-pages asdf golang) # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
 
 source $ZSH/oh-my-zsh.sh
 
@@ -293,6 +293,11 @@ compinit
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
 
+## Golang
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+## Golang
+
 ## Clojure installation path
 export PATH=$HOME/.clojure/bin:$PATH
 alias clj_rebel="clj -M:repl"
@@ -305,4 +310,5 @@ if command -v glow &>/dev/null; then
   todo.sh pending | glow
 else
   todo.sh pending
+alias espeak_el="espeak -v el+klatt4"
 fi
