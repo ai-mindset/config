@@ -305,6 +305,7 @@ export PATH=$HOME/.local/bin:$PATH
 export PATH=$HOME/.clojure/bin:$PATH
 alias clj_rebel="clj -M:repl"
 export TERM=xterm-256color # For Tmux to show correct colours
+export PATH=$PATH:~/.vim/plugged/vim-iced/bin # vim-iced
 ## Clojure installation path
 
 # Print todo list
