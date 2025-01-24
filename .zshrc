@@ -207,14 +207,6 @@ asdf_update_all() {
 }
 ## asdf
 
-## Deno 
-export DENO_INSTALL="$HOME/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
-fpath=(~/.zsh $fpath)
-autoload -Uz compinit
-compinit -u
-## Deno
-
 rm -f ~/.zsh_history
 # $ crontab -e
 # @daily name_of_script.sh
@@ -248,7 +240,7 @@ update_ollama_fortnightly
 ## Ollama
 
 ## General aliases
-alias yt-dlp_mp3="yt-dlp_linux -x --audio-format mp3"
+alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
 alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
 alias font_recache="sudo fc-cache -f -v"
 alias pip_rm_all="pip freeze | xargs pip uninstall -y"
