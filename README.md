@@ -17,10 +17,10 @@ Create a simple to-do list. `.zshrc` already contains a simple function ([thanks
 Generate Unix commands using [ollama](https://ollama.com/) with [granite3.1-dense:8b](https://www.ollama.com/library/granite3.1-dense). Inspired by [llmpeg](https://github.com/jjcm/llmpeg)
 
 ## `.tmux.conf`
-[Tmux](https://github.com/tmux/tmux/wiki) colour configuration for showing colour palettes accurately when using Neovim in a tmux session. You can safe it under `$HOME` 
+[tmux](https://github.com/tmux/tmux/wiki) colour configuration for showing colour palettes accurately when using Neovim in a tmux session. You can safe it under `$HOME` 
 
 ## `.zshrc`
-Zsh configuration. Requires [Oh My Zsh](https://ohmyz.sh/) and (optionally) [Glow](https://github.com/charmbracelet/glow). It contains configuration for [asdf version manager](https://github.com/asdf-vm/asdf), [Julia](https://github.com/asdf-vm/asdf), [uv](https://docs.astral.sh/uv/) and [Clojure](https://clojure.org/). It should be saved under `$HOME`
+[Zsh](https://www.zsh.org/) configuration. Requires [Oh My Zsh](https://ohmyz.sh/) and (optionally) [Glow](https://github.com/charmbracelet/glow). It contains configurations for the [asdf version manager](https://github.com/asdf-vm/asdf), [Julia](https://julialang.org/), the [uv](https://docs.astral.sh/uv/) package and project manager, [Clojure](https://clojure.org/) and [Go](https://go.dev/). It should be saved under `$HOME`
 
 ## `kitty.conf` 
 [kitty](https://sw.kovidgoyal.net/kitty/) terminal. Requires [Fira Code](https://github.com/tonsky/FiraCode). It can be saved under `$HOME/.config/kitty/` or `$HOME`
@@ -30,4 +30,4 @@ Zsh configuration. Requires [Oh My Zsh](https://ohmyz.sh/) and (optionally) [Glo
 
 
 ---
-[^1]: Note that shell scripts could be converted to shell functions that can live under `.zshrc` 
+[^1]: Note that small shell scripts could be converted to shell functions that can live under `.zshrc` 
