@@ -21,18 +21,28 @@ if [[ $# -lt 2 ]]; then
 fi
 
 command_type=$1
+command_help=$(${command_type} --help 2>&1 || ${command_type} -help 2>&1)
+command_help=$(echo "$command_help" | jq -R -s '.')
 shift
 user_input=$(echo "$*" | jq -R -s '.')
 
-json_payload="{\"model\":\"granite3.1-dense:8b\",\"prompt\":$user_input,\"system\":\"You are a world class expert in Unix commands, particularly ${command_type}. Generate only the raw command without any explanation or backticks. The command must be a single line without breaks. Be precise\"}"
+# Create JSON payload using jq
+json_payload=$(jq -n \
+  --arg model "granite3.1-dense:8b" \
+  --arg prompt "$*" \
+  --arg command_type "$command_type" \
+  --arg help "$command_help" \
+  '{
+    model: $model,
+    prompt: $prompt,
+    system: ("You are a world class expert in Unix commands, particularly \($command_type). Here is \($command_type)'\''s help message that you should use as your reference: \($help). Generate a command based on the description provided. Print only the raw command without any explanation or backticks. The command must be a single line without breaks. Be precise")
+  }')
 
 response=$(curl -s "http://localhost:11434/api/generate" \
    -H "Content-Type: application/json" \
    -d "$json_payload")
 
-command=$(echo "$response" | while read -r line; do
-   echo "$line" | jq -r '.response // empty' 2>/dev/null
-done | tr -d '\n')
+command=$(echo "$response" | jq -r 'select(.response != null) | .response' | tr -d '\n')
 
 [[ -z "$command" ]] && { print -P "%F{red}Error: No valid command generated.%f"; exit 1; }
 
