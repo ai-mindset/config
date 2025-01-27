@@ -26,7 +26,7 @@ Zsh configuration. Requires [Oh My Zsh](https://ohmyz.sh/) and (optionally) [Glo
 [kitty](https://sw.kovidgoyal.net/kitty/) terminal. Requires [Fira Code](https://github.com/tonsky/FiraCode). It can be saved under `$HOME/.config/kitty/` or `$HOME`
 
 ## Modelfile
-Olama model file for creating a coder model based on quantised "Qwen 2.5 coder" [qwen2.5-coder:14b-instruct-q4_K_M](https://ollama.com/library/qwen2.5-coder:14b-instruct-q4_K_M)
+Ollama model file for creating a coder model based on quantised "Qwen 2.5 coder" [qwen2.5-coder:14b-instruct-q4_K_M](https://ollama.com/library/qwen2.5-coder:14b-instruct-q4_K_M)
 
 
 ---
