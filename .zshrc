@@ -275,8 +275,8 @@ alias rm_docker_installation="sudo dnf remove docker \
                   docker-engine-selinux \
                   docker-engine"
 alias podman_stop_all='for id in $(podman ps -q); do echo "Stopping container: $id"; podman stop $id; done; echo "All containers have been stopped."'
-alias podman_rmc="podman rm $(podman ps -aq)"
-alias podman_rmi="podman rmi -f $(podman images -aq)"
+alias podman_rmc="podman rm -f $(podman ps -aq)"
+alias podman_rmi="podman rmi $(podman images -aq)"
 alias podman_prune="podman system prune -af --volumes"
 alias git_prune='git fetch -p && git branch -vv | grep ": gone]" | awk "{print \$1}" | { branches=$(cat); echo "Delete these local branches that no longer exist on remote? [y/N]"; echo "$branches"; } | xargs -p git branch -D'
 alias grep="grep --color=auto"
@@ -297,6 +297,12 @@ export PATH=$HOME/.local/bin:$PATH
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 ## Golang
+
+## Deno
+fpath=(~/.zsh $fpath)
+autoload -U compinit && compinit
+. "$HOME/.deno/env"
+## Deno
 
 ## Clojure installation path
 export PATH=$HOME/.clojure/bin:$PATH
