@@ -283,6 +283,19 @@ alias grep="grep --color=auto"
 alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## General aliases
 
+## Convert .epub to .md 
+epub2md() {
+  local input="$1"
+  local output="${2:-${input%.*}.md}"
+  pandoc -f epub -t html "$input" | lynx -dump -stdin -nomargins -width=1000 > "$output"
+}
+# Add completion definition
+_epub2md() {
+  _arguments '1:epub file:_files -g "*.epub"' '2:output file:_files'
+}
+compdef _epub2md epub2md
+## Convert .epub to .md
+
 ## The following lines were added by compinstall
 zstyle ':completion:*' completer _complete _ignored
 zstyle :compinstall filename '$HOME/.zshrc'
