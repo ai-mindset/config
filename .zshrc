@@ -163,49 +163,12 @@ alias mongo_compass_download="curl -O https://downloads.mongodb.com/compass/mong
 export CONNECTION_STRING_MONGODB="mongodb://127.0.0.1:27017"
 ## MongoDB
 
-## asdf
-# Before `asdf install` https://github.com/asdf-vm/asdf-erlang?tab=readme-ov-file#before-asdf-install
-. "$HOME/.asdf/asdf.sh"
-export ASDF_DIR=$HOME/.asdf
-fpath=(${ASDF_DIR}/completions $fpath)
+## asdf > v0.16
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 # asdf-erlang https://github.com/asdf-vm/asdf-erlang
 export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
+## asdf > v0.16
 
-# Function to update asdf, its plugins, and installed programs
-asdf_update_all() {
-    echo "Updating asdf..."
-    asdf update
-
-    echo "Updating asdf plugins..."
-    asdf plugin update --all
-
-    echo "Updating installed programs and removing old versions..."
-    local keep_versions=2  # Change this to keep more or fewer old versions
-
-   asdf list | cut -d' ' -f1 | grep -v '^$' | sort -u | while read -r package; do
-        echo "Processing $package..."
-        
-        # Get current version before update
-        local current_version=$(asdf current "$package" | awk '{print $2}')
-        
-        # Install latest version
-        local latest_version=$(asdf latest "$package")
-        asdf install "$package" "$latest_version"
-        asdf global "$package" "$latest_version"
-        
-        # Remove old versions, keeping the specified number of recent versions
-        local versions_to_remove=$(asdf list "$package" | grep -v "$current_version" | grep -v "$latest_version" | sort -Vr | tail -n +$((keep_versions + 1)))
-        if [ -n "$versions_to_remove" ]; then
-            echo "$versions_to_remove" | xargs -I{} asdf uninstall "$package" {}
-        fi
-    done
-
-    echo "Reshim asdf..."
-    asdf reshim 
-
-    echo "ASDF update complete!"
-}
-## asdf
 
 rm -f ~/.zsh_history
 # $ crontab -e
