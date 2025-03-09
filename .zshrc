@@ -164,9 +164,10 @@ export CONNECTION_STRING_MONGODB="mongodb://127.0.0.1:27017"
 ## MongoDB
 
 ## asdf > v0.16
+export PATH=$HOME/.asdf/bin:$PATH
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-# asdf-erlang https://github.com/asdf-vm/asdf-erlang
-export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)  # append completions to fpath
+export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"  # asdf-erlang https://github.com/asdf-vm/asdf-erlang
 ## asdf > v0.16
 
 
@@ -259,6 +260,12 @@ _epub2md() {
 compdef _epub2md epub2md
 ## Convert .epub to .md
 
+## Deno
+fpath=(~/.zsh $fpath)
+autoload -U compinit && compinit
+. "$HOME/.deno/env"
+## Deno
+
 ## The following lines were added by compinstall
 zstyle ':completion:*' completer _complete _ignored
 zstyle :compinstall filename '$HOME/.zshrc'
@@ -274,17 +281,10 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 ## Golang
 
-## Deno
-fpath=(~/.zsh $fpath)
-autoload -U compinit && compinit
-. "$HOME/.deno/env"
-## Deno
-
 ## Clojure installation path
 export PATH=$HOME/.clojure/bin:$PATH
 alias clj_rebel="clj -M:repl"
 export TERM=xterm-256color # For Tmux to show correct colours
-export PATH=$PATH:~/.vim/plugged/vim-iced/bin # vim-iced
 ## Clojure installation path
 
 # Print todo list
