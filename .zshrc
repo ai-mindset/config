@@ -137,6 +137,14 @@ log_task() {
 }
 ## log tasks
 
+## Clean __pycache__
+clean_pycache() {
+  local target_dir="${1:-.}"
+  find "$target_dir" -type d -name "__pycache__" -print -exec rm -rf {} \; 2>/dev/null
+  echo "Cleaned __pycache__ directories from $target_dir"
+}
+## Clean __pycache__
+
 ## Julia
 # >>> juliaup initialize >>>
 # !! Contents within this block are managed by juliaup !!
