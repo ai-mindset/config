@@ -250,7 +250,7 @@ alias podman_stop_all='for id in $(podman ps -q); do echo "Stopping container: $
 alias podman_rmc="podman rm -f $(podman ps -aq)"
 alias podman_rmi="podman rmi $(podman images -aq)"
 alias podman_prune="podman system prune -af --volumes"
-alias git_prune='git fetch -p && git branch -vv | grep ": gone]" | awk "{print \$1}" | { branches=$(cat); echo "Delete these local branches that no longer exist on remote? [y/N]"; echo "$branches"; } | xargs -p git branch -D'
+alias git_prune='git fetch -p && git branch -vv | grep ": gone]" | awk "{print \$1}" > /tmp/gone_branches && cat /tmp/gone_branches | { echo "Delete these local branches that no longer exist on remote? [y/N]"; cat; } && read -q "REPLY?Proceed? " && git branch -D $(cat /tmp/gone_branches)'
 alias grep="grep --color=auto"
 alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## General aliases
