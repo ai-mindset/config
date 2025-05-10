@@ -4,8 +4,9 @@ A set of utilities and configurations that make my life easier
 ## ocr.sh[^1]
 Small shell script that extracts text from images using "llama 3.2". Requires [ollama](https://ollama.com/) and [llama3.2-vision](https://ollama.com/library/llama3.2-vision)
 
-## stt.sh[^1] 
-Transcribe video or audio. Requires [whisper-standalone-win](https://github.com/Purfview/whisper-standalone-win)
+## ~~stt.sh~~
+~~Transcribe video or audio. Requires [whisper-standalone-win](https://github.com/Purfview/whisper-standalone-win)~~
+Replaced with the original [whisper](https://github.com/openai/whisper) model from OpenAI
 
 ## tts.sh  
 Convert text to speech using voice models. Requires [Piper TTS](https://github.com/rhasspy/piper) and optionally [ffmpeg](https://ffmpeg.org/) for MP3 conversion.
