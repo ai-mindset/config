@@ -6,7 +6,7 @@ Small shell script that extracts text from images using "llama 3.2". Requires [o
 
 ## ~~stt.sh~~
 ~~Transcribe video or audio. Requires [whisper-standalone-win](https://github.com/Purfview/whisper-standalone-win)~~
-Replaced with the original [whisper](https://github.com/openai/whisper) model from OpenAI
+Replaced with the original [whisper](https://github.com/openai/whisper) model from OpenAI `uv venv && pip install git+https://github.com/openai/whisper.git`  
 
 ## tts.sh  
 Convert text to speech using voice models. Requires [Piper TTS](https://github.com/rhasspy/piper) and optionally [ffmpeg](https://ffmpeg.org/) for MP3 conversion.
