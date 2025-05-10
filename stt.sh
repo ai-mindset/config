@@ -5,7 +5,7 @@
 # ==================================
 #
 # Description:
-#   Transcribes video/audio files using whisper-faster-xxl with optimised settings
+#   Transcribes video/audio files using faster-whisper-xxl with optimised settings
 #
 # Usage:
 #   ./stt.sh <input_file>
@@ -15,7 +15,7 @@
 #   ./stt.sh /path/to/video.mp4
 #
 # Requirements:
-#   - whisper-faster-xxl must be installed and in your PATH
+#   - faster-whisper-xxl must be installed and in your PATH
 #   - Input file must be a valid audio/video file
 #
 # Note: 
@@ -43,7 +43,7 @@ fi
 file_path=$(dirname "$1")"/"
 
 # Run transcription
-whisper-faster-xxl "$1" \
+faster-whisper-xxl "$1" \
     --model medium \
     --language en \
     --word_timestamps False \
