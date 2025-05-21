@@ -118,6 +118,9 @@ export PATH="$HOME/AppImages:$PATH"
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
 
+# Nvim AppImage 
+alias nvim='nvim-linux-x86_64.appimage'
+
 # System-wide editor
 export EDITOR="nvim"
 
@@ -211,6 +214,28 @@ function update_ollama_fortnightly() {
 update_ollama_fortnightly
 ## Ollama
 
+## List big packages
+function list_big_packages() {
+  if command -v dpkg-query >/dev/null 2>&1; then
+    # Debian-based systems: size is in kilobytes, converting to MiB
+    dpkg-query -Wf '${Installed-Size}\t${Package}\n' | \
+      sort -n -r | \
+      awk '{printf "%.2f MiB\t%s\n", $1/1024, $2}' | \
+      head -n 20
+  elif command -v dnf >/dev/null 2>&1; then
+    # Fedora-based systems using dnf:
+    # dnf repoquery returns package size in bytes.
+    dnf repoquery --installed --qf '%{size}\t%{name}\n' | \
+      sort -n -r | \
+      awk '{printf "%.2f MiB\t%s\n", $1/(1024*1024), $2}' | \
+      head -n 20
+  else
+    echo "Neither dpkg-query nor dnf found. Unsupported system."
+    return 1
+  fi
+}
+## List big packages
+
 ## General aliases
 alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
 alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
@@ -286,7 +311,7 @@ export PATH=$HOME/.local/bin:$PATH
 
 ## Golang
 export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/usr/local/go/bin
 ## Golang
 
 ## Clojure installation path
@@ -296,8 +321,12 @@ export TERM=xterm-256color # For Tmux to show correct colours
 ## Clojure installation path
 
 # Print todo list
-if command -v glow &>/dev/null; then
-  todo.sh pending | glow
-else
-  todo.sh pending
-fi
+# if command -v glow &>/dev/null; then
+#   todo.sh pending | glow
+# else
+#   todo.sh pending
+# fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
