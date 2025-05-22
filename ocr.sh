@@ -4,7 +4,7 @@
 # Usage: ./ocr.sh [--model MODEL_NAME] IMAGE_PATH
 
 # Default configuration
-DEFAULT_MODEL="llama3.2-vision:latest"
+DEFAULT_MODEL="qwen2.5vl:7b"
 MODEL=${DEFAULT_MODEL}
 
 # From https://github.com/bytefer/ollama-ocr/blob/main/src/config.ts#L6C43-L11C68
