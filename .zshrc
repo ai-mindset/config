@@ -114,11 +114,6 @@ LD_LIBRARY_PATH=/usr/local/lib
 # Appimages
 export PATH="$HOME/AppImages:$PATH"
 
-# PiperTTS
-PATH=$PATH:$HOME/AppImage/piper 
-export PATH
-alias piper="./piper --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
-
 # Tmux
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
@@ -286,6 +281,12 @@ alias grep="grep --color=auto"
 alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## General aliases
 
+## PiperTTS
+PATH=$PATH:$HOME/AppImage/piper 
+export PATH
+alias piper="./piper --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
+## PiperTTS
+
 ## Convert .epub to .md 
 epub2md() {
   local input="$1"
@@ -339,3 +340,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # Azure Developer CLI
 AZURE_DEV_COLLECT_TELEMETRY="no"
+
+# Gogh https://github.com/Gogh-Co/Gogh 
+export TERMINAL=gnome-terminal
