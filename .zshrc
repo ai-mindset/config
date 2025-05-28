@@ -114,6 +114,11 @@ LD_LIBRARY_PATH=/usr/local/lib
 # Appimages
 export PATH="$HOME/AppImages:$PATH"
 
+# PiperTTS
+PATH=$PATH:$HOME/AppImage/piper 
+export PATH
+alias piper="./piper --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
+
 # Tmux
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
