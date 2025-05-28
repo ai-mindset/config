@@ -271,6 +271,7 @@ alias rm_docker_installation="sudo dnf remove docker \
                   docker-selinux \
                   docker-engine-selinux \
                   docker-engine"
+alias docker="podman"
 alias podman_stop_all='for id in $(podman ps -q); do echo "Stopping container: $id"; podman stop $id; done; echo "All containers have been stopped."'
 alias podman_rmc="podman rm -f $(podman ps -aq)"
 alias podman_rmi="podman rmi $(podman images -aq)"
@@ -330,3 +331,6 @@ export TERM=xterm-256color # For Tmux to show correct colours
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Azure Developer CLI
+AZURE_DEV_COLLECT_TELEMETRY="no"
