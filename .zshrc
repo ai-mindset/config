@@ -161,19 +161,6 @@ export JULIA_NUM_THREADS=6 # $ julia --proj --threads auto
                            # [ Info: For best performance, `JULIA_NUM_THREADS` (8) should be less than number of CPU threads (8).
 ## Julia
 
-## MongoDB
-export MONGODB_LIB="/var/lib/mongodb"
-export MONGODB_LOG="/var/log/mongodb"
-alias mongo_before_start_if_error="sudo systemctl daemon-reload"
-alias mongo_start="sudo systemctl start mongod"
-alias mongo_restart="sudo systemctl restart mongod"
-alias mongo_verify_up="sudo systemctl status mongod"
-alias mongo_stop="sudo service mongod stop"
-alias mongo_start_after_sys_reboot="sudo systemctl enable mongod"
-alias mongo_compass_download="curl -O https://downloads.mongodb.com/compass/mongodb-compass_1.42.2_amd64.deb ~/Downloads"
-export CONNECTION_STRING_MONGODB="mongodb://127.0.0.1:27017"
-## MongoDB
-
 ## asdf > v0.16
 export PATH=$HOME/.asdf/bin:$PATH
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
@@ -300,12 +287,6 @@ _epub2md() {
 compdef _epub2md epub2md
 ## Convert .epub to .md
 
-## Deno
-fpath=(~/.zsh $fpath)
-autoload -U compinit && compinit
-. "$HOME/.deno/env"
-## Deno
-
 ## The following lines were added by compinstall
 zstyle ':completion:*' completer _complete _ignored
 zstyle :compinstall filename '$HOME/.zshrc'
@@ -316,16 +297,8 @@ compinit
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
 
-## Golang
-export GOPATH=$HOME/go
-export PATH=$PATH:/usr/local/go/bin
-## Golang
-
-## Clojure installation path
-export PATH=$HOME/.clojure/bin:$PATH
-alias clj_rebel="clj -M:repl"
-export TERM=xterm-256color # For Tmux to show correct colours
-## Clojure installation path
+# Rust 
+. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
 
 # Print todo list
 # if command -v glow &>/dev/null; then
@@ -338,8 +311,5 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Azure Developer CLI
-AZURE_DEV_COLLECT_TELEMETRY="no"
-
 # Gogh https://github.com/Gogh-Co/Gogh 
-export TERMINAL=gnome-terminal
+export TERMINAL=xfce4-terminal
