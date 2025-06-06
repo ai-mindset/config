@@ -93,6 +93,8 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
+
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -105,21 +107,30 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+### Python
 # Source .venv to prevent installing packages globally
 source $HOME/.venv/bin/activate
-
+# Maintain PATH after venv activation
+function activate-venv() {
+  local _OLD_PATH="$PATH"
+  # first argument = path to your venv folder
+  source "$1/bin/activate"
+  # now force-restore the rest of the PATH
+  export PATH="$VIRTUAL_ENV/bin:$_OLD_PATH"
+### Python
+}
 # Load library path
 LD_LIBRARY_PATH=/usr/local/lib
 
 # Appimages
 export PATH="$HOME/AppImages:$PATH"
 
+# Neovim
+export PATH="$HOME/AppImages/nvim-linux-x86_64/bin:$PATH"
+
 # Tmux
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
-
-# Nvim AppImage 
-alias nvim='nvim-linux-x86_64.appimage'
 
 # System-wide editor
 export EDITOR="nvim"
@@ -198,7 +209,7 @@ function update_ollama_fortnightly() {
     fi
 }
 #
-update_ollama_fortnightly
+# update_ollama_fortnightly
 ## Ollama
 
 ## List big packages
@@ -313,3 +324,4 @@ export NVM_DIR="$HOME/.nvm"
 
 # Gogh https://github.com/Gogh-Co/Gogh 
 export TERMINAL=xfce4-terminal
+
