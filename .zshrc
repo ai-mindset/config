@@ -161,11 +161,14 @@ clean_pycache() {
 
 ## Julia
 # >>> juliaup initialize >>>
+
 # !! Contents within this block are managed by juliaup !!
-path=($HOME'/.juliaup/bin' $path)
+
+path=('$HOME/.juliaup/bin' $path)
 export PATH
+
 # <<< juliaup initialize <<<
-export JULIA_NUM_THREADS=6 # $ julia --proj --threads auto 
+export JULIA_NUM_THREADS=8 # $ julia --proj --threads auto 
                            #   julia> using Base.Threads
                            #   julia> nthreads()
                            #   8
@@ -274,6 +277,7 @@ alias podman_stop_all='for id in $(podman ps -q); do echo "Stopping container: $
 alias podman_rmc="podman rm -f $(podman ps -aq)"
 alias podman_rmi="podman rmi $(podman images -aq)"
 alias podman_prune="podman system prune -af --volumes"
+alias podman_build_run="podman_prune && podman build -t my-container . && podman run -it my-container"
 alias git_prune='git fetch -p && git branch -vv | grep ": gone]" | awk "{print \$1}" > /tmp/gone_branches && cat /tmp/gone_branches | { echo "Delete these local branches that no longer exist on remote? [y/N]"; cat; } && read -q "REPLY?Proceed? " && git branch -D $(cat /tmp/gone_branches)'
 alias grep="grep --color=auto"
 alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
@@ -309,14 +313,14 @@ compinit
 export PATH=$HOME/.local/bin:$PATH
 
 # Rust 
-. "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
+# . "$HOME/.cargo/env"            # For sh/bash/zsh/ash/dash/pdksh
 
 # Print todo list
-# if command -v glow &>/dev/null; then
-#   todo.sh pending | glow
-# else
-#   todo.sh pending
-# fi
+if command -v glow &>/dev/null; then
+  todo.sh pending | glow
+else
+  todo.sh pending
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
