@@ -93,6 +93,8 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
+
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -105,20 +107,32 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+### Python
 # Source .venv to prevent installing packages globally
 source $HOME/.venv/bin/activate
-
+# Maintain PATH after venv activation
+function activate-venv() {
+  local _OLD_PATH="$PATH"
+  # first argument = path to your venv folder
+  source "$1/bin/activate"
+  # now force-restore the rest of the PATH
+  export PATH="$VIRTUAL_ENV/bin:$_OLD_PATH"
+### Python
+}
 # Load library path
 LD_LIBRARY_PATH=/usr/local/lib
 
 # Appimages
 export PATH="$HOME/AppImages:$PATH"
 
+# Neovim
+export PATH="$HOME/AppImages/nvim-linux-x86_64/bin:$PATH"
+
 # Tmux
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
 
-# Nvim AppImage 
+# Nvim AppImage
 alias nvim='nvim-linux-x86_64.appimage'
 
 # System-wide editor
@@ -150,29 +164,19 @@ clean_pycache() {
 
 ## Julia
 # >>> juliaup initialize >>>
+
 # !! Contents within this block are managed by juliaup !!
-path=($HOME'/.juliaup/bin' $path)
+
+path=('$HOME/.juliaup/bin' $path)
 export PATH
+
 # <<< juliaup initialize <<<
-export JULIA_NUM_THREADS=6 # $ julia --proj --threads auto 
+export JULIA_NUM_THREADS=8 # $ julia --proj --threads auto
                            #   julia> using Base.Threads
                            #   julia> nthreads()
                            #   8
                            # [ Info: For best performance, `JULIA_NUM_THREADS` (8) should be less than number of CPU threads (8).
 ## Julia
-
-## MongoDB
-export MONGODB_LIB="/var/lib/mongodb"
-export MONGODB_LOG="/var/log/mongodb"
-alias mongo_before_start_if_error="sudo systemctl daemon-reload"
-alias mongo_start="sudo systemctl start mongod"
-alias mongo_restart="sudo systemctl restart mongod"
-alias mongo_verify_up="sudo systemctl status mongod"
-alias mongo_stop="sudo service mongod stop"
-alias mongo_start_after_sys_reboot="sudo systemctl enable mongod"
-alias mongo_compass_download="curl -O https://downloads.mongodb.com/compass/mongodb-compass_1.42.2_amd64.deb ~/Downloads"
-export CONNECTION_STRING_MONGODB="mongodb://127.0.0.1:27017"
-## MongoDB
 
 ## asdf > v0.16
 export PATH=$HOME/.asdf/bin:$PATH
@@ -205,13 +209,13 @@ function update_ollama_fortnightly() {
     if [[ $time_diff -ge $two_weeks ]]; then
         echo "Running ollama script..."
         curl -fsSL https://ollama.com/install.sh | sh
-        
+
         # Update the last run time
         echo "$current_time" > "$last_run_file"
     fi
 }
 #
-update_ollama_fortnightly
+# update_ollama_fortnightly
 ## Ollama
 
 ## List big packages
@@ -257,7 +261,7 @@ alias dos_unix_convert="sed -i -e 's/\r$//' "
 alias weather="curl https://wttr.in/"
 alias apt_upd="sudo apt update && sudo apt upgrade && sudo apt autoremove --purge && sudo apt autoclean" # Update OS packages
 vid_total_dur_hrs() {
-    find . -maxdepth 1 -exec ffprobe -v quiet -of csv=p=0 -show_entries format=duration {} \; | 
+    find . -maxdepth 1 -exec ffprobe -v quiet -of csv=p=0 -show_entries format=duration {} \; |
         awk '{s+=$0} END {print s/3600}'
 }
 alias c="xclip -selection clipboard"
@@ -271,16 +275,24 @@ alias rm_docker_installation="sudo dnf remove docker \
                   docker-selinux \
                   docker-engine-selinux \
                   docker-engine"
+alias docker="podman"
 alias podman_stop_all='for id in $(podman ps -q); do echo "Stopping container: $id"; podman stop $id; done; echo "All containers have been stopped."'
 alias podman_rmc="podman rm -f $(podman ps -aq)"
 alias podman_rmi="podman rmi $(podman images -aq)"
 alias podman_prune="podman system prune -af --volumes"
+alias podman_build_run="podman_prune && podman build -t my-container . && podman run -it my-container"
 alias git_prune='git fetch -p && git branch -vv | grep ": gone]" | awk "{print \$1}" > /tmp/gone_branches && cat /tmp/gone_branches | { echo "Delete these local branches that no longer exist on remote? [y/N]"; cat; } && read -q "REPLY?Proceed? " && git branch -D $(cat /tmp/gone_branches)'
 alias grep="grep --color=auto"
 alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## General aliases
 
-## Convert .epub to .md 
+## PiperTTS
+PATH=$PATH:$HOME/AppImage/piper
+export PATH
+alias piper="./piper --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
+## PiperTTS
+
+## Convert .epub to .md
 epub2md() {
   local input="$1"
   local output="${2:-${input%.*}.md}"
@@ -293,12 +305,6 @@ _epub2md() {
 compdef _epub2md epub2md
 ## Convert .epub to .md
 
-## Deno
-fpath=(~/.zsh $fpath)
-autoload -U compinit && compinit
-. "$HOME/.deno/env"
-## Deno
-
 ## The following lines were added by compinstall
 zstyle ':completion:*' completer _complete _ignored
 zstyle :compinstall filename '$HOME/.zshrc'
@@ -309,23 +315,12 @@ compinit
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
 
-## Golang
-export GOPATH=$HOME/go
-export PATH=$PATH:/usr/local/go/bin
-## Golang
-
-## Clojure installation path
-export PATH=$HOME/.clojure/bin:$PATH
-alias clj_rebel="clj -M:repl"
-export TERM=xterm-256color # For Tmux to show correct colours
-## Clojure installation path
-
 # Print todo list
-# if command -v glow &>/dev/null; then
-#   todo.sh pending | glow
-# else
-#   todo.sh pending
-# fi
+if command -v glow &>/dev/null; then
+  todo.sh pending | glow
+else
+  todo.sh pending
+fi
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
