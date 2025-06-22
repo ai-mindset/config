@@ -7,18 +7,11 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "agent": {
-    "model_parameters": [],
-    "default_model": {
-      "provider": "ollama",
-      "model": "devstral:latest"
-    },
-    "version": "2"
-  },
   "telemetry": {
     "metrics": false,
     "diagnostics": false
   },
+
   "vim_mode": true,
   // Vim settings
   "vim": {
@@ -35,6 +28,8 @@
     // The shape can be one of the following: "block", "bar", "underline", "hollow".
     "cursor_shape": {}
   },
+
+  // UI settings
   "ui_font_size": 25,
   "buffer_font_size": 23,
   "theme": {
@@ -42,6 +37,32 @@
     "light": "Ayu Light",
     "dark": "Ayu Dark"
   },
+  "agent_font_size": 23,
+  "auto_signature_help": true,
+  "diagnostics": {
+    "button": true,
+    "include_warnings": true,
+    "inline": {
+      "enabled": true,
+      "update_debounce_ms": 150,
+      "padding": 4,
+      "min_column": 0,
+      "max_severity": null
+    },
+    "cargo": null
+  },
+
+  // Agent
+  "agent": {
+    "model_parameters": [],
+    "default_model": {
+      "provider": "ollama",
+      "model": "devstral:latest"
+    },
+    "version": "2"
+  },
+
+  // Ollama
   // https://zed.dev/docs/ai/custom-api-keys#ollama-context
   "language_models": {
     "ollama": {
@@ -100,12 +121,19 @@
   "soft_wrap": "none",
   // The column at which to soft-wrap lines, for buffers where soft-wrap
   // is enabled.
+  "remove_trailing_whitespace_on_save": true,
+
   // The extensions that Zed should automatically install on startup.
-  //
   // If you don't want any of these extensions, add this field to your settings
   // and change the value to `false`.
   "auto_install_extensions": {
-    // "html": true
+    "ruff": true,
+    "julia": true,
+    "zig": true,
+    "toml": true,
+    "dockerfile": true,
+    "jsonnet": true,
+    "latex": true
   },
 
   // Different settings for specific languages.
@@ -200,6 +228,27 @@
         }
       ],
       "language_servers": ["pyright", "ruff"]
+    },
+    "Zig": {
+      "prettier": {
+        "allowed": true,
+        "plugins": ["zls", "..."]
+      }
+    }
+  },
+
+  // LSP
+  "lsp": {
+    "pyright": {
+      "settings": {
+        "python.analysis": {
+          "diagnosticMode": "workspace",
+          "typeCheckingMode": "strict"
+        },
+        "python": {
+          "pythonPath": ".venv/bin/python"
+        }
+      }
     }
   }
 }
