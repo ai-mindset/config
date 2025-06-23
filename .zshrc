@@ -132,9 +132,6 @@ export PATH="$HOME/AppImages/nvim-linux-x86_64/bin:$PATH"
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
 
-# Nvim AppImage
-alias nvim='nvim-linux-x86_64.appimage'
-
 # System-wide editor
 export EDITOR="nvim"
 
@@ -325,3 +322,6 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Zed unsupported GPU https://zed.dev/docs/linux 
+ZED_ALLOW_EMULATED_GPU=1
