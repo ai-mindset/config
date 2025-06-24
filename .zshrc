@@ -312,6 +312,9 @@ compinit
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
 
+# Cargo / Rust
+. "$HOME/.cargo/env"
+
 # Print todo list
 if command -v glow &>/dev/null; then
   todo.sh pending | glow
@@ -322,6 +325,3 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# Zed unsupported GPU https://zed.dev/docs/linux 
-ZED_ALLOW_EMULATED_GPU=1
