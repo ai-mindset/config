@@ -107,18 +107,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-### Python
-# Source .venv to prevent installing packages globally
-source $HOME/.venv/bin/activate
-# Maintain PATH after venv activation
-function activate-venv() {
-  local _OLD_PATH="$PATH"
-  # first argument = path to your venv folder
-  source "$1/bin/activate"
-  # now force-restore the rest of the PATH
-  export PATH="$VIRTUAL_ENV/bin:$_OLD_PATH"
-### Python
-}
+
 # Load library path
 LD_LIBRARY_PATH=/usr/local/lib
 
@@ -158,22 +147,6 @@ clean_pycache() {
   echo "Cleaned __pycache__ directories from $target_dir"
 }
 ## Clean __pycache__
-
-## Julia
-# >>> juliaup initialize >>>
-
-# !! Contents within this block are managed by juliaup !!
-
-path=('$HOME/.juliaup/bin' $path)
-export PATH
-
-# <<< juliaup initialize <<<
-export JULIA_NUM_THREADS=8 # $ julia --proj --threads auto
-                           #   julia> using Base.Threads
-                           #   julia> nthreads()
-                           #   8
-                           # [ Info: For best performance, `JULIA_NUM_THREADS` (8) should be less than number of CPU threads (8).
-## Julia
 
 ## asdf > v0.16
 export PATH=$HOME/.asdf/bin:$PATH
@@ -302,18 +275,29 @@ _epub2md() {
 compdef _epub2md epub2md
 ## Convert .epub to .md
 
-## The following lines were added by compinstall
-zstyle ':completion:*' completer _complete _ignored
-zstyle :compinstall filename '$HOME/.zshrc'
-autoload -Uz compinit
+# Completion
+fpath=(~/.zsh/completion $fpath)
+autoload -U compinit
 compinit
-## End of lines added by compinstall
 
+### Python
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
 
-# Cargo / Rust
-. "$HOME/.cargo/env"
+# Source .venv to prevent installing packages globally
+source $HOME/.venv/bin/activate
+# Maintain PATH after venv activation
+function activate-venv() {
+  local _OLD_PATH="$PATH"
+  # first argument = path to your venv folder
+  source "$1/bin/activate"
+  # now force-restore the rest of the PATH
+  export PATH="$VIRTUAL_ENV/bin:$_OLD_PATH"
+}
+### Python
+
+# Deno
+. "$HOME/.deno/env"
 
 # Print todo list
 if command -v glow &>/dev/null; then
@@ -322,6 +306,7 @@ else
   todo.sh pending
 fi
 
+# Node Version Manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
