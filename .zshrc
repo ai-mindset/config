@@ -140,14 +140,6 @@ log_task() {
 }
 ## log tasks
 
-## Clean __pycache__
-clean_pycache() {
-  local target_dir="${1:-.}"
-  find "$target_dir" -type d -name "__pycache__" -print -exec rm -rf {} \; 2>/dev/null
-  echo "Cleaned __pycache__ directories from $target_dir"
-}
-## Clean __pycache__
-
 ## asdf > v0.16
 export PATH=$HOME/.asdf/bin:$PATH
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
@@ -184,8 +176,8 @@ function update_ollama_fortnightly() {
         echo "$current_time" > "$last_run_file"
     fi
 }
-#
-# update_ollama_fortnightly
+
+update_ollama_fortnightly
 ## Ollama
 
 ## List big packages
@@ -283,6 +275,13 @@ compinit
 ### Python
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
+
+# Clean __pycache__
+clean_pycache() {
+  local target_dir="${1:-.}"
+  find "$target_dir" -type d -name "__pycache__" -print -exec rm -rf {} \; 2>/dev/null
+  echo "Cleaned __pycache__ directories from $target_dir"
+}
 
 # Source .venv to prevent installing packages globally
 source $HOME/.venv/bin/activate
