@@ -194,17 +194,17 @@ function list_big_packages() {
     # Debian-based systems: size is in kilobytes, converting to MiB
     dpkg-query -Wf '${Installed-Size}\t${Package}\n' | \
       sort -n -r | \
-      awk '{printf "%.2f MiB\t%s\n", $1/1024, $2}' | \
+      awk '{size_mib = $1/1024; printf (size_mib==int(size_mib) ? "%.0f MiB\t%s\n" : "%.1f MiB\t%s\n"), size_mib, $2}' | \
       head -n 20
-  elif command -v dnf >/dev/null 2>&1; then
-    # Fedora-based systems using dnf:
-    # dnf repoquery returns package size in bytes.
-    dnf repoquery --installed --qf '%{size}\t%{name}\n' | \
+  elif command -v rpm >/dev/null 2>&1; then
+    # Fedora-based systems using rpm:
+    # rpm returns package size in kilobytes (without decimal)
+    rpm -qa --qf '%{size}\t%{name}\n' | \
       sort -n -r | \
-      awk '{printf "%.2f MiB\t%s\n", $1/(1024*1024), $2}' | \
+      awk '{size_mib = $1/1024; printf (size_mib==int(size_mib) ? "%.0f MiB\t%s\n" : "%.1f MiB\t%s\n"), size_mib, $2}' | \
       head -n 20
   else
-    echo "Neither dpkg-query nor dnf found. Unsupported system."
+    echo "Neither dpkg-query nor rpm found. Unsupported system."
     return 1
   fi
 }
