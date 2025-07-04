@@ -275,6 +275,15 @@ compinit
 ### Python
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
+# Fix completions for uv run https://github.com/astral-sh/uv/issues/8432#issuecomment-2867318195
+_uv_run_mod() {
+    if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
+        _arguments '*:filename:_files'
+    else
+        _uv "$@"
+    fi
+}
+compdef _uv_run_mod uv
 
 # Clean __pycache__
 clean_pycache() {
