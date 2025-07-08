@@ -202,6 +202,25 @@ function list_big_packages() {
 }
 ## List big packages
 
+## Find and replace
+function replace() {
+  if [ "$#" -ne 2 ]; then
+    printf "Usage: replace <search> <replace>\n"
+    return 1
+  fi
+  local search=$1
+  local replace=$2
+
+  # GNU sed:
+  find . -type f \
+    -exec sed -i "s/${search}/${replace}/g" {} +
+
+  # If you’re on macOS/BSD, use:
+  # find . -type f \
+  #   -exec sed -i '' "s/${search}/${replace}/g" {} +
+}
+## Find and replace
+
 ## General aliases
 alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
 alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
