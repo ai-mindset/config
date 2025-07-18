@@ -337,3 +337,9 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Azure products
+# https://github.com/Azure/azure-functions-core-tools?tab=readme-ov-file#telemetry
+export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=1
+# https://github.com/Azure/azure-cli?tab=readme-ov-file#telemetry-configuration
+az config set core.collect_telemetry=no
