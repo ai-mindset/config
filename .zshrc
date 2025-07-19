@@ -223,7 +223,7 @@ function replace() {
 
 ## General aliases
 alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
-alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
+alias yt-dlp_best="yt-dlp -f best"
 alias font_recache="sudo fc-cache -f -v"
 alias pip_rm_all="pip freeze | xargs pip uninstall -y"
 alias url_IP="dig +trace"
