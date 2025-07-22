@@ -1,6 +1,11 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+# Zsh speedup
+DISABLE_AUTO_UPDATE="true"
+DISABLE_MAGIC_FUNCTIONS="true"
+DISABLE_COMPFIX="true"
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -75,7 +80,11 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(gitfast colored-man-pages asdf golang) # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
+plugins=(
+    gitfast
+    colored-man-pages
+    asdf # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -223,7 +232,7 @@ function replace() {
 
 ## General aliases
 alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
-alias yt-dlp_best="yt-dlp -f best"
+alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
 alias font_recache="sudo fc-cache -f -v"
 alias pip_rm_all="pip freeze | xargs pip uninstall -y"
 alias url_IP="dig +trace"
@@ -288,8 +297,13 @@ compdef _epub2md epub2md
 
 # Completion
 fpath=(~/.zsh/completion $fpath)
-autoload -U compinit
-compinit
+# Zsh speedup - Smarter completion initialization
+autoload -Uz compinit
+if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+    compinit
+else
+    compinit -C
+fi
 
 ### Python
 # uv uvx
