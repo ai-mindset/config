@@ -136,7 +136,7 @@ export EDITOR="nvim"
 ## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
 log_task() {
    # Define path to your log file
-    local log_file="$HOME/Documents/work_log.txt"
+    local log_file="$HOME/Documents/work_log.md"
 
    # Get current ISO 8601 timestamp
    local timestamp=$(date -u +"%Y-%m-%d")
