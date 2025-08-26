@@ -153,6 +153,8 @@ task() {
   echo "📝 SIMPLE TASK MANAGER 📝"
   echo "=========================="
   echo ""
+  echo "Emoji Legend: 📅 = Due date   📋 = Creation date   ✅ = Completion date"
+  echo ""
 
   case "$1" in
     add|a)
@@ -250,17 +252,11 @@ task() {
 
     all|*)
       if [[ "$1" == "all" || "$1" == "l" || "$1" == "list" ]]; then
-        echo "Emoji Legend:"
-        echo "📅 = Due date   📋 = Creation date   ✅ = Completion date"
-        echo ""
-        echo "All asks:"
+       echo "All tasks:"
       else
         [[ -z "$1" ]] || echo "Unknown command: $1"
         echo "Usage: task [command] [args]"
         echo "Commands: add|a [date] <text>, today|t, week|w, pending|p, done|d [num], all"
-        echo ""
-        echo "Emoji Legend:"
-        echo "📅 = Due date   📋 = Creation date   ✅ = Completion date"
         echo ""
         echo "All tasks:"
       fi
