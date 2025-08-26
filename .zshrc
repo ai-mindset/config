@@ -195,24 +195,52 @@ task() {
 
     pending|p)
       echo "Pending tasks:"
-      grep -F -- "- [ ]" "$TASK_FILE" | cat -n || echo "No pending tasks."
+      # Store pending task line numbers in a temporary file
+      local pending_file="/tmp/task_pending_$$"
+      : > "$pending_file"
+      grep -n -F -- "- [ ]" "$TASK_FILE" | while read -r line; do
+        echo "$line" >> "$pending_file"
+      done
+
+      if [[ ! -s "$pending_file" ]]; then
+        echo "No pending tasks."
+      else
+        local counter=1
+        while IFS=':' read -r num task; do
+          echo "$counter $task"
+          ((counter++))
+        done < "$pending_file"
+      fi
       ;;
 
     done|d)
       if [[ "$2" =~ ^[0-9]+$ ]]; then
-        # Complete task by number
         local task_num=$2
-        local task_count=$(wc -l < "$TASK_FILE")
+        local pending_file="/tmp/task_pending_$$"
 
-        if [[ $task_num -lt 1 || $task_num -gt $task_count ]]; then
-          echo "Error: Task number out of range."
+        # Check if pending file exists
+        if [[ ! -f "$pending_file" || ! -s "$pending_file" ]]; then
+          echo "Please run 'task pending' first to see your pending tasks."
           return 1
         fi
 
+        # Get the task line number from the pending file
+        local line_info=$(sed -n "${task_num}p" "$pending_file")
+        if [[ -z "$line_info" ]]; then
+          echo "Error: Task number out of range. Run 'task pending' to see available tasks."
+          return 1
+        fi
+
+        # Extract the actual line number in the task file
+        local file_line_num=$(echo "$line_info" | cut -d':' -f1)
+
         # Mark as completed with date
         local completion_date=$(date -u +"%Y-%m-%d")
-        sed -i "${task_num}s/- \\[ \\]/- \\[x\\] ✅ $completion_date/" "$TASK_FILE"
-        echo "Completed task: $(sed -n "${task_num}p" "$TASK_FILE")"
+        sed -i "${file_line_num}s/- \\[ \\]/- \\[x\\] ✅ $completion_date/" "$TASK_FILE"
+        echo "Completed task: $(sed -n "${file_line_num}p" "$TASK_FILE")"
+
+        # Clean up temporary file
+        rm -f "$pending_file"
       else
         # List completed tasks
         echo "Completed tasks:"
