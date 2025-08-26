@@ -81,7 +81,7 @@ COMPLETION_WAITING_DOTS="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    gitfast
+    git
     colored-man-pages
     asdf # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
 )
@@ -134,18 +134,111 @@ alias tmux='tmux -S ~/.tmux/dev'
 export EDITOR="nvim"
 
 ## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
+# Define path to your log file
+TASK_FILE="$HOME/Documents/work_log.md"
 log_task() {
-   # Define path to your log file
-    local log_file="$HOME/Documents/work_log.md"
-
    # Get current ISO 8601 timestamp
    local timestamp=$(date -u +"%Y-%m-%d")
 
     # Append timestamp and message to log file
-    echo "$timestamp $*" >> "$log_file"
+    echo "$timestamp $*" >> "$TASK_FILE"
 
     # Confirm that task was added
     echo "Logged: $timestamp $*"
+}
+
+# Unified Markdown Task Manager
+task() {
+  [[ -f "$TASK_FILE" ]] || touch "$TASK_FILE"
+  echo "📝 SIMPLE TASK MANAGER 📝"
+  echo "=========================="
+  echo ""
+
+  case "$1" in
+    add|a)
+      shift
+      # Check if next arg is a date
+      local due_date=$(date -u +"%Y-%m-%d")
+      if [[ "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        due_date="$1"
+        shift
+      fi
+
+      # Get task text
+      local task_text="$*"
+      if [[ -z "$task_text" ]]; then
+        echo "Error: Task cannot be empty."
+        return 1
+      fi
+
+      # Add task with labeled dates using emoji
+      local timestamp=$(date -u +"%Y-%m-%d")
+      echo "- [ ] 📅 $due_date 📋 $timestamp $task_text" >> "$TASK_FILE"
+      echo "Added task due 📅 $due_date: $task_text"
+      ;;
+
+    today|t)
+      local today=$(date -u +"%Y-%m-%d")
+      echo "Tasks due today (📅 $today):"
+      grep -F -- "- [ ] 📅 $today" "$TASK_FILE" | cat -n || echo "No tasks due today."
+      ;;
+
+    week|w)
+      local today=$(date -u +"%Y-%m-%d")
+      local week_later=$(date -u -v+7d +"%Y-%m-%d" 2>/dev/null || date -u -d "+7 days" +"%Y-%m-%d")
+      echo "Tasks due in the next 7 days:"
+      awk -v today="$today" -v week="$week_later" '$0 ~ /- \[ \]/ && $0 ~ /📅/ {
+        split($0, a, "📅"); split(a[2], b, " ");
+        if (b[2] >= today && b[2] <= week) print $0
+      }' "$TASK_FILE" | cat -n || echo "No tasks due this week."
+      ;;
+
+    pending|p)
+      echo "Pending tasks:"
+      grep -F -- "- [ ]" "$TASK_FILE" | cat -n || echo "No pending tasks."
+      ;;
+
+    done|d)
+      if [[ "$2" =~ ^[0-9]+$ ]]; then
+        # Complete task by number
+        local task_num=$2
+        local task_count=$(wc -l < "$TASK_FILE")
+
+        if [[ $task_num -lt 1 || $task_num -gt $task_count ]]; then
+          echo "Error: Task number out of range."
+          return 1
+        fi
+
+        # Mark as completed with date
+        local completion_date=$(date -u +"%Y-%m-%d")
+        sed -i "${task_num}s/- \\[ \\]/- \\[x\\] ✅ $completion_date/" "$TASK_FILE"
+        echo "Completed task: $(sed -n "${task_num}p" "$TASK_FILE")"
+      else
+        # List completed tasks
+        echo "Completed tasks:"
+        grep -F -- "- [x]" "$TASK_FILE" | cat -n || echo "No completed tasks."
+      fi
+      ;;
+
+    all|*)
+      if [[ "$1" == "all" || "$1" == "l" || "$1" == "list" ]]; then
+        echo "Emoji Legend:"
+        echo "📅 = Due date   📋 = Creation date   ✅ = Completion date"
+        echo ""
+        echo "All asks:"
+      else
+        [[ -z "$1" ]] || echo "Unknown command: $1"
+        echo "Usage: task [command] [args]"
+        echo "Commands: add|a [date] <text>, today|t, week|w, pending|p, done|d [num], all"
+        echo ""
+        echo "Emoji Legend:"
+        echo "📅 = Due date   📋 = Creation date   ✅ = Completion date"
+        echo ""
+        echo "All tasks:"
+      fi
+      cat -n "$TASK_FILE" || echo "No tasks found."
+      ;;
+  esac
 }
 ## log tasks
 
@@ -295,7 +388,7 @@ _epub2md() {
 compdef _epub2md epub2md
 ## Convert .epub to .md
 
-# Completion
+## Completion
 fpath=(~/.zsh/completion $fpath)
 # Zsh speedup - Smarter completion initialization
 autoload -Uz compinit
@@ -304,6 +397,9 @@ if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; t
 else
     compinit -C
 fi
+# Load git completions for aliases
+zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
+## Completion
 
 ### Python
 # uv uvx
@@ -342,9 +438,9 @@ function activate-venv() {
 
 # Print todo list
 if command -v glow &>/dev/null; then
-  todo.sh pending | glow
+    task pending | glow
 else
-  todo.sh pending
+    task pending
 fi
 
 # Node Version Manager
