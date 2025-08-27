@@ -170,29 +170,30 @@ task() {
       fi
       ;;
 
-    all|*)
-      if [[ "$1" == "all" || "$1" == "l" || "$1" == "list" ]]; then
-        echo "All tasks:"
-        cat -n "$TASK_FILE" || echo "No tasks found."
-      else
-        # Just show help when no arguments or unknown command
-        [[ -z "$1" ]] || echo "Unknown command: $1"
-        echo "Usage: task [command] [args]"
-        echo "Commands:"
-        echo "  add|a [date] <text>  Add a new task with optional due date (YYYY-MM-DD)"
-        echo "  today|t              List tasks due today"
-        echo "  week|w               List tasks due in the next 7 days"
-        echo "  pending|p            List all pending tasks"
-        echo "  done|d [num]         Mark task as complete or list completed tasks"
-        echo "  cancel|c [num]       Mark task as cancelled or list cancelled tasks"
-        echo "  all|list|l           List all tasks"
-        echo ""
-        echo "Examples:"
-        echo "  task add \"Buy groceries\"                 # Add task due today"
-        echo "  task add 2025-09-15 \"Finish project\"     # Add task with due date"
-        echo "  task pending                               # List pending tasks"
-        echo "  task done 2                                # Mark task #2 as complete"
-      fi
+    all|list|l)
+      # Only list all tasks when explicitly requested
+      echo "All tasks:"
+      cat -n "$TASK_FILE" || echo "No tasks found."
+      ;;
+
+    *)
+      # Show help for no arguments or unknown commands
+      [[ -z "$1" ]] || echo "Unknown command: $1"
+      echo "Usage: task [command] [args]"
+      echo "Commands:"
+      echo "  add|a [date] <text>  Add a new task with optional due date (YYYY-MM-DD)"
+      echo "  today|t              List tasks due today"
+      echo "  week|w               List tasks due in the next 7 days"
+      echo "  pending|p            List all pending tasks"
+      echo "  done|d [num]         Mark task as complete or list completed tasks"
+      echo "  cancel|c [num]       Mark task as cancelled or list cancelled tasks"
+      echo "  all|list|l           List all tasks"
+      echo ""
+      echo "Examples:"
+      echo "  task add \"Buy groceries\"                 # Add task due today"
+      echo "  task add 2025-09-15 \"Finish project\"     # Add task with due date"
+      echo "  task pending                            # List pending tasks"
+      echo "  task done 2                             # Mark task #2 as complete"
       ;;
   esac
 }
