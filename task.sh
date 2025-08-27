@@ -65,41 +65,26 @@ task() {
 
     pending|p)
       echo "Pending tasks:"
-      # Store pending task line numbers in a temporary file
-      local pending_file="/tmp/task_pending_$"
-      : > "$pending_file"
-      grep -n -F -- "- [ ]" "$TASK_FILE" | while read -r line; do
-        echo "$line" >> "$pending_file"
-      done
+      local pending_tasks=$(grep -n -F -- "- [ ]" "$TASK_FILE")
 
-      if [[ ! -s "$pending_file" ]]; then
+      if [[ -z "$pending_tasks" ]]; then
         echo "No pending tasks."
       else
-        local counter=1
-        while IFS=':' read -r num task; do
-          echo "$counter $task"
-          ((counter++))
-        done < "$pending_file"
+        echo "$pending_tasks" | cat -n | sed 's/^\s*\([0-9]*\)\s*\([0-9]*\):/\1 -/'
       fi
+      ;;
 
       # We don't remove the file here as it's needed by done/cancel commands
       # File will be automatically cleaned up on system reboot
       # A trap would be ideal but could interfere with user's existing traps
-      ;;
 
     done|d)
       if [[ "$2" =~ ^[0-9]+$ ]]; then
         local task_num=$2
-        local pending_file="/tmp/task_pending_$$"
 
-        # Check if pending file exists
-        if [[ ! -f "$pending_file" || ! -s "$pending_file" ]]; then
-          echo "Please run 'task pending' first to see your pending tasks."
-          return 1
-        fi
+        # Get the Nth pending task directly
+        local line_info=$(grep -n -F -- "- [ ]" "$TASK_FILE" | sed -n "${task_num}p")
 
-        # Get the task line number from the pending file
-        local line_info=$(sed -n "${task_num}p" "$pending_file")
         if [[ -z "$line_info" ]]; then
           echo "Error: Task number out of range. Run 'task pending' to see available tasks."
           return 1
@@ -111,10 +96,7 @@ task() {
         # Mark as completed with date
         local completion_date=$(date -u +"%Y-%m-%d")
         sed -i "${file_line_num}s/- \\[ \\]/- \\[x\\] ✅ $completion_date/" "$TASK_FILE"
-        echo "Completed task: $(sed -n "${file_line_num}p" "$TASK_FILE")"
-
-        # Clean up temporary file
-        rm -f "$pending_file"
+        echo "Task $task_num marked as completed"
       else
         # List completed tasks
         echo "Completed tasks:"
@@ -122,19 +104,13 @@ task() {
       fi
       ;;
 
-     cancel|c)
+    cancel|c)
       if [[ "$2" =~ ^[0-9]+$ ]]; then
         local task_num=$2
-        local pending_file="/tmp/task_pending_$"
 
-        # Check if pending file exists
-        if [[ ! -f "$pending_file" || ! -s "$pending_file" ]]; then
-          echo "Please run 'task pending' first to see your pending tasks."
-          return 1
-        fi
+        # Get the Nth pending task directly
+        local line_info=$(grep -n -F -- "- [ ]" "$TASK_FILE" | sed -n "${task_num}p")
 
-        # Get the task line number from the pending file
-        local line_info=$(sed -n "${task_num}p" "$pending_file")
         if [[ -z "$line_info" ]]; then
           echo "Error: Task number out of range. Run 'task pending' to see available tasks."
           return 1
@@ -158,23 +134,17 @@ task() {
 
         # Replace the line in the file
         sed -i "${file_line_num}s|.*|$new_line|" "$TASK_FILE"
-
-        echo "Cancelled task: $(sed -n "${file_line_num}p" "$TASK_FILE")"
-
-        # Clean up temporary file
-        rm -f "$pending_file"
+        echo "Task $task_num marked as cancelled"
       else
         # List cancelled tasks
         echo "Cancelled tasks:"
         grep -F -- "- [-] ❌" "$TASK_FILE" | cat -n || echo "No cancelled tasks."
       fi
-      ;;
-
-    all|list|l)
-      # Only list all tasks when explicitly requested
-      echo "All tasks:"
-      cat -n "$TASK_FILE" || echo "No tasks found."
-      ;;
+      ;;    all|list|l)
+          # Only list all tasks when explicitly requested
+          echo "All tasks:"
+          cat -n "$TASK_FILE" || echo "No tasks found."
+          ;;
 
     *)
       # Show help for no arguments or unknown commands
@@ -200,5 +170,5 @@ task() {
 
 # Execute task function with all passed arguments
 # Add clean-up trap for temporary files
-trap 'rm -f /tmp/task_pending_$' EXIT INT TERM
+trap 'rm -f /tmp/task_pending_$$' EXIT INT TERM
 task "$@"
