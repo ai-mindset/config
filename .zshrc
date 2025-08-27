@@ -135,134 +135,16 @@ export EDITOR="nvim"
 
 ## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
 # Define path to your log file
-TASK_FILE="$HOME/Documents/work_log.md"
 log_task() {
-   # Get current ISO 8601 timestamp
-   local timestamp=$(date -u +"%Y-%m-%d")
+    local TASK_FILE="$HOME/Documents/work_log.md"
+    # Get current ISO 8601 timestamp
+    local timestamp=$(date -u +"%Y-%m-%d")
 
     # Append timestamp and message to log file
     echo "$timestamp $*" >> "$TASK_FILE"
 
     # Confirm that task was added
     echo "Logged: $timestamp $*"
-}
-
-# Unified Markdown Task Manager
-task() {
-  [[ -f "$TASK_FILE" ]] || touch "$TASK_FILE"
-  echo "📝 SIMPLE TASK MANAGER 📝"
-  echo "=========================="
-  echo ""
-  echo "Emoji Legend: 📅 = Due date   📋 = Creation date   ✅ = Completion date"
-  echo ""
-
-  case "$1" in
-    add|a)
-      shift
-      # Check if next arg is a date
-      local due_date=$(date -u +"%Y-%m-%d")
-      if [[ "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
-        due_date="$1"
-        shift
-      fi
-
-      # Get task text
-      local task_text="$*"
-      if [[ -z "$task_text" ]]; then
-        echo "Error: Task cannot be empty."
-        return 1
-      fi
-
-      # Add task with labeled dates using emoji
-      local timestamp=$(date -u +"%Y-%m-%d")
-      echo "- [ ] 📅 $due_date 📋 $timestamp $task_text" >> "$TASK_FILE"
-      echo "Added task due 📅 $due_date: $task_text"
-      ;;
-
-    today|t)
-      local today=$(date -u +"%Y-%m-%d")
-      echo "Tasks due today (📅 $today):"
-      grep -F -- "- [ ] 📅 $today" "$TASK_FILE" | cat -n || echo "No tasks due today."
-      ;;
-
-    week|w)
-      local today=$(date -u +"%Y-%m-%d")
-      local week_later=$(date -u -v+7d +"%Y-%m-%d" 2>/dev/null || date -u -d "+7 days" +"%Y-%m-%d")
-      echo "Tasks due in the next 7 days:"
-      awk -v today="$today" -v week="$week_later" '$0 ~ /- \[ \]/ && $0 ~ /📅/ {
-        split($0, a, "📅"); split(a[2], b, " ");
-        if (b[2] >= today && b[2] <= week) print $0
-      }' "$TASK_FILE" | cat -n || echo "No tasks due this week."
-      ;;
-
-    pending|p)
-      echo "Pending tasks:"
-      # Store pending task line numbers in a temporary file
-      local pending_file="/tmp/task_pending_$$"
-      : > "$pending_file"
-      grep -n -F -- "- [ ]" "$TASK_FILE" | while read -r line; do
-        echo "$line" >> "$pending_file"
-      done
-
-      if [[ ! -s "$pending_file" ]]; then
-        echo "No pending tasks."
-      else
-        local counter=1
-        while IFS=':' read -r num task; do
-          echo "$counter $task"
-          ((counter++))
-        done < "$pending_file"
-      fi
-      ;;
-
-    done|d)
-      if [[ "$2" =~ ^[0-9]+$ ]]; then
-        local task_num=$2
-        local pending_file="/tmp/task_pending_$$"
-
-        # Check if pending file exists
-        if [[ ! -f "$pending_file" || ! -s "$pending_file" ]]; then
-          echo "Please run 'task pending' first to see your pending tasks."
-          return 1
-        fi
-
-        # Get the task line number from the pending file
-        local line_info=$(sed -n "${task_num}p" "$pending_file")
-        if [[ -z "$line_info" ]]; then
-          echo "Error: Task number out of range. Run 'task pending' to see available tasks."
-          return 1
-        fi
-
-        # Extract the actual line number in the task file
-        local file_line_num=$(echo "$line_info" | cut -d':' -f1)
-
-        # Mark as completed with date
-        local completion_date=$(date -u +"%Y-%m-%d")
-        sed -i "${file_line_num}s/- \\[ \\]/- \\[x\\] ✅ $completion_date/" "$TASK_FILE"
-        echo "Completed task: $(sed -n "${file_line_num}p" "$TASK_FILE")"
-
-        # Clean up temporary file
-        rm -f "$pending_file"
-      else
-        # List completed tasks
-        echo "Completed tasks:"
-        grep -F -- "- [x]" "$TASK_FILE" | cat -n || echo "No completed tasks."
-      fi
-      ;;
-
-    all|*)
-      if [[ "$1" == "all" || "$1" == "l" || "$1" == "list" ]]; then
-       echo "All tasks:"
-      else
-        [[ -z "$1" ]] || echo "Unknown command: $1"
-        echo "Usage: task [command] [args]"
-        echo "Commands: add|a [date] <text>, today|t, week|w, pending|p, done|d [num], all"
-        echo ""
-        echo "All tasks:"
-      fi
-      cat -n "$TASK_FILE" || echo "No tasks found."
-      ;;
-  esac
 }
 ## log tasks
 
@@ -460,7 +342,8 @@ function activate-venv() {
 # Deno
 . "$HOME/.deno/env"
 
-# Print todo list
+# Print todo list - https://github.com/ai-mindset/config/blob/main/task.sh
+# Save in PATH, as `task`
 if command -v glow &>/dev/null; then
     task pending | glow
 else
