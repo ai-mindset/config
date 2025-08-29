@@ -360,3 +360,6 @@ export NVM_DIR="$HOME/.nvm"
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=1
 # https://github.com/Azure/azure-cli?tab=readme-ov-file#telemetry-configuration
 az config set core.collect_telemetry=no
+
+# Claude Code
+alias claude="claude --model claude-sonnet-3.7-20250219"
