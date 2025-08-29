@@ -1,0 +1,101 @@
+[user]
+   email = "" ; Fill in
+    name = "" ; Fill in
+
+[core]
+    editor = vim
+    pager = less -FRX
+    autocrlf = input
+    whitespace = trailing-space,space-before-tab
+
+[color]
+    ui = auto
+
+[alias]
+    # Shorter status commands
+    s = status -s
+
+    # Commit shortcuts
+    ca = commit --amend
+    can = commit --amend --no-edit
+
+    # Branch operations
+    br = branch -r
+    ba = branch -a
+    bd = branch -d
+    bD = branch -D
+    cob = checkout -b
+    cp = cherry-pick
+
+    # Common operations
+    aa = add --all
+    ap = add --patch
+    unstage = reset HEAD --
+
+    # Stash operations
+    sl = stash list
+    ss = stash save
+    sp = stash pop
+    sa = stash apply
+
+    # Log viewing
+    l = log --oneline -n 20
+    ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    lp = log -p
+    lf = log --follow
+
+    # Working with remotes
+    fa = fetch --all
+    p = push
+    pf = push --force-with-lease
+    pl = pull
+
+    # Diff shortcuts
+    ds = diff --staged
+    dc = diff --cached
+    dl = diff HEAD~1 HEAD
+
+    # Show changes between branches
+    bdiff = !git diff $(git merge-base HEAD origin/main) HEAD
+
+    # Undo operations
+    undo = reset HEAD~1 --mixed
+    unstage = reset HEAD --
+    wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+
+    # Workflow helpers
+    standup = !git log --since=yesterday --author=$(git config user.email) --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    today = !git log --since=midnight --author=$(git config user.email) --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+
+    # Show files ignored by git
+    ignored = !git ls-files -v | grep "^[[:lower:]]"
+
+    # Save work in progress
+    wip = !git add -A && git commit -m "WIP"
+    unwip = !git log -n 1 | grep -q -c "WIP" && git reset HEAD~1
+
+    # Safe force push
+    pushf = push --force-with-lease
+
+    # Clean up local branches that have been merged
+    cleanup = !git branch --merged | grep -v \"\\*\" | grep -v main | grep -v dev | xargs -n 1 git branch -d
+
+    # Find text in any commit
+    grep-all = !"f() { git rev-list --all | xargs git grep \"$@\"; }; f"
+
+[diff]
+    tool = vimdiff
+    algorithm = patience
+
+[merge]
+    tool = vimdiff
+    conflictstyle = diff3
+
+[pull]
+    rebase = true
+
+[push]
+    default = current
+
+[rebase]
+    autosquash = true
