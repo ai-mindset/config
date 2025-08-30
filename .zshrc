@@ -278,7 +278,7 @@ alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## PiperTTS
 PATH=$PATH:$HOME/AppImage/piper
 export PATH
-alias piper="./piper --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
+alias piper="piper --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
 ## PiperTTS
 
 ## Convert .epub to .md
@@ -360,3 +360,16 @@ export NVM_DIR="$HOME/.nvm"
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=1
 # https://github.com/Azure/azure-cli?tab=readme-ov-file#telemetry-configuration
 az config set core.collect_telemetry=no
+
+### Claude Code
+# If Claude Code is not installed, run ` to install
+if !command -v claude &>/dev/null; then
+    echo "Claude Code is not installed. Please install it by running `curl -fsSL https://claude.ai/install.sh | bash`"
+    exit 1
+fi
+
+# https://support.anthropic.com/en/articles/11940350-claude-code-model-configuration
+export ANTHROPIC_MODEL="claude-3-7-sonnet-20250219"
+alias claude_sonnet="claude --model $ANTHROPIC_MODEL"
+
+### Claude Code
