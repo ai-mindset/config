@@ -5,7 +5,7 @@
 
 if [[ $# -lt 2 ]]; then
    print -P "Usage: %F{green}$(basename $0) <command_type> \"<description>\" [--model <model_name>]%f"
-   print -P "Example: %F{green}$(basename $0) tar compress the directory 'Documents' to a tar.gz file --model gemma3n:latest%f"
+   print -P "Example: %F{green}$(basename $0) tar compress the directory 'Documents' to a tar.gz file --model mistral:instruct%f"
    exit 1
 fi
 
@@ -17,7 +17,7 @@ command_help=$(${command_type} --help 2>&1 || ${command_type} -help 2>&1)
 command_help=$(echo "$command_help" | jq -R -s '.')
 
 # Parse remaining arguments
-model="gemma3n:latest" # Default model
+model="mistral:instruct" # Default model
 description=""
 
 while [[ $# -gt 0 ]]; do
