@@ -126,12 +126,12 @@ export PATH="$HOME/AppImages:$PATH"
 # Neovim
 export PATH="$HOME/AppImages/nvim-linux-x86_64/bin:$PATH"
 
+# System-wide editor
+export EDITOR="nvim"
+
 # Tmux
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
-
-# System-wide editor
-export EDITOR="nvim"
 
 ## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
 # Define path to your log file
@@ -307,7 +307,7 @@ fi
 zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
 ## Completion
 
-### Python
+## Python
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
 # Fix completions for uv run https://github.com/astral-sh/uv/issues/8432#issuecomment-2867318195
@@ -337,7 +337,7 @@ function activate-venv() {
   # now force-restore the rest of the PATH
   export PATH="$VIRTUAL_ENV/bin:$_OLD_PATH"
 }
-### Python
+## Python
 
 # Deno
 . "$HOME/.deno/env"
@@ -350,19 +350,8 @@ else
     task pending
 fi
 
-# Node Version Manager
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# Azure products
-# https://github.com/Azure/azure-functions-core-tools?tab=readme-ov-file#telemetry
-export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=1
-# https://github.com/Azure/azure-cli?tab=readme-ov-file#telemetry-configuration
-az config set core.collect_telemetry=no
-
-### Claude Code
-# If Claude Code is not installed, run ` to install
+## Claude Code
+# If Claude Code is not installed
 if !command -v claude &>/dev/null; then
     echo "Claude Code is not installed. Please install it by running `curl -fsSL https://claude.ai/install.sh | bash`"
     exit 1
@@ -370,6 +359,19 @@ fi
 
 # https://support.anthropic.com/en/articles/11940350-claude-code-model-configuration
 export ANTHROPIC_MODEL="claude-3-7-sonnet-20250219"
-alias claude_sonnet="claude --model $ANTHROPIC_MODEL"
+alias claude3.7="claude --model $ANTHROPIC_MODEL"
+## Claude Code
 
-### Claude Code
+## Node Version Manager
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+## Node Version Manager
+
+## Azure products
+# https://github.com/Azure/azure-functions-core-tools?tab=readme-ov-file#telemetry
+export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=1
+# https://github.com/Azure/azure-cli?tab=readme-ov-file#telemetry-configuration
+az config set core.collect_telemetry=no
+## Azure products
+
