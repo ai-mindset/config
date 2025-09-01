@@ -3,99 +3,71 @@
     name = "" ; Fill in
 
 [core]
-    editor = vim
-    pager = less -FRX
-    autocrlf = input
-    whitespace = trailing-space,space-before-tab
+   editor = nvim
+   autocrlf = input
+   ignorecase = false
 
-[color]
-    ui = auto
-
-[alias]
-    # Shorter status commands
-    s = status -s
-
-    # Commit shortcuts
-    ca = commit --amend
-    can = commit --amend --no-edit
-
-    # Branch operations
-    br = branch -r
-    ba = branch -a
-    bd = branch -d
-    bD = branch -D
-    cob = checkout -b
-    cp = cherry-pick
-
-    # Common operations
-    aa = add --all
-    ap = add --patch
-    unstage = reset HEAD --
-
-    # Stash operations
-    sl = stash list
-    ss = stash save
-    sp = stash pop
-    sa = stash apply
-
-    # Log viewing
-    l = log --oneline -n 20
-    ll = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-    lp = log -p
-    lf = log --follow
-
-    # Working with remotes
-    fa = fetch --all
-    p = push
-    pf = push --force-with-lease
-    pl = pull
-
-    # Diff shortcuts
-    ds = diff --staged
-    dc = diff --cached
-    dl = diff HEAD~1 HEAD
-
-    # Show changes between branches
-    bdiff = !git diff $(git merge-base HEAD origin/main) HEAD
-
-    # Undo operations
-    undo = reset HEAD~1 --mixed
-    unstage = reset HEAD --
-    wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
-
-    # Workflow helpers
-    standup = !git log --since=yesterday --author=$(git config user.email) --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-    today = !git log --since=midnight --author=$(git config user.email) --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-
-    # Show files ignored by git
-    ignored = !git ls-files -v | grep "^[[:lower:]]"
-
-    # Save work in progress
-    wip = !git add -A && git commit -m "WIP"
-    unwip = !git log -n 1 | grep -q -c "WIP" && git reset HEAD~1
-
-    # Safe force push
-    pushf = push --force-with-lease
-
-    # Clean up local branches that have been merged
-    cleanup = !git branch --merged | grep -v \"\\*\" | grep -v main | grep -v dev | xargs -n 1 git branch -d
-
-    # Find text in any commit
-    grep-all = !"f() { git rev-list --all | xargs git grep \"$@\"; }; f"
-
-[diff]
-    tool = vimdiff
-    algorithm = patience
-
-[merge]
-    tool = vimdiff
-    conflictstyle = diff3
+[init]
+   defaultBranch = main
 
 [pull]
-    rebase = true
+    ff = only
+    # This forces explicit handling of divergent branches, which is ideal for professional open-source repositories because:
+    # - Prevents accidental merges - Contributors must consciously resolve conflicts
+    # - Maintains clean main branch - No automatic merge commits cluttering history
+    # - Enforces workflow discipline - Forces proper branch management and rebasing
+    # - Reduces integration errors - Failed pulls alert you to conflicts that need attention
+    # Professional organizations typically want contributors to rebase their feature branches before merging, and fast-forward only enforces this practice by failing when branches have diverged, requiring deliberate action.
 
 [push]
-    default = current
+   default = simple
+   autoSetupRemote = true # Eliminates --set-upstream verbose commands
 
-[rebase]
-    autosquash = true
+[merge]
+   conflictstyle = diff3 # Shows original, yours, and theirs during conflicts
+   tool = vscode
+
+[diff]
+   algorithm = histogram # Better diff performance and readability
+   colorMoved = default
+
+[rerere]
+   enabled = true # Remembers conflict resolutions for repeated merges
+
+[alias]
+    # Complex log formatting
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --stat
+
+    # Multi-step workflows
+    sync = !git fetch origin && git rebase origin/main
+    cleanup = !git branch --merged | grep -v '\\*\\|main\\|master' | xargs -n 1 git branch -d
+    unstage = reset HEAD --
+
+    # Complex status checks
+    conflicts = diff --name-only --diff-filter=U
+    modified = ls-files -m
+
+    # Stash with message
+    stash-staged = stash --keep-index
+
+    # Recent changes - what happened lately?
+    recent = log --since='1 week ago' --oneline --author-date-order
+
+    # File history - track changes to specific file
+    file-log = log --follow --patch --
+
+    # What changed in last commit?
+    last = log -1 --stat --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+
+    # Compare branches
+    compare = log --left-right --graph --cherry-pick --oneline
+
+    # Quick overview of current branch vs main
+    ahead = log main..HEAD --oneline
+    behind = log HEAD..main --oneline
+
+    # Show commits that touched specific paths
+    touched = log --oneline --name-only
+
+    # Compact view with file counts
+    compact = log --pretty=format:'%C(yellow)%h %C(blue)%ad %C(red)%an %C(reset)%s' --date=short --numstat
