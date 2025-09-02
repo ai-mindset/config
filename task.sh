@@ -63,6 +63,18 @@ task() {
       }' "$TASK_FILE" | cat -n || echo "No tasks due this week."
       ;;
 
+    lastweek|lw)
+      local weeks=${2:-1}
+      local days=$((weeks * 7))
+      local today=$(date -u +"%Y-%m-%d")
+      local weeks_ago=$(date -u -v-${days}d +"%Y-%m-%d" 2>/dev/null || date -u -d "-${days} days" +"%Y-%m-%d")
+      echo "Tasks completed in the last ${weeks} week(s):"
+      awk -v start="$weeks_ago" -v end="$today" '$0 ~ /- \[x\]/ && $0 ~ /✅/ {
+        split($0, a, "✅"); gsub(/^ */, "", a[2]); split(a[2], b, " ");
+        if (b[1] >= start && b[1] <= end) print $0
+      }' "$TASK_FILE" | cat -n || echo "No tasks completed in the last ${weeks} week(s)."
+      ;;
+
     pending|p)
       echo "Pending tasks:"
       local pending_tasks=$(grep -n -F -- "- [ ]" "$TASK_FILE")
@@ -154,6 +166,7 @@ task() {
       echo "  add|a [date] <text>  Add a new task with optional due date (YYYY-MM-DD)"
       echo "  today|t              List tasks due today"
       echo "  week|w               List tasks due in the next 7 days"
+      echo "  lastweek|lw [weeks]  List tasks completed in the last X weeks (default: 1)"
       echo "  pending|p            List all pending tasks"
       echo "  done|d [num]         Mark task as complete or list completed tasks"
       echo "  cancel|c [num]       Mark task as cancelled or list cancelled tasks"
