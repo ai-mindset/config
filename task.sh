@@ -58,8 +58,8 @@ task() {
       local week_later=$(date -u -v+7d +"%Y-%m-%d" 2>/dev/null || date -u -d "+7 days" +"%Y-%m-%d")
       echo "Tasks due in the next 7 days:"
       awk -v today="$today" -v week="$week_later" '$0 ~ /- \[ \]/ && $0 ~ /📅/ {
-        split($0, a, "📅"); split(a[2], b, " ");
-        if (b[2] >= today && b[2] <= week) print $0
+        split($0, a, "📅"); gsub(/^ */, "", a[2]); split(a[2], b, " ");
+        if (b[1] >= today && b[1] <= week) print $0
       }' "$TASK_FILE" | cat -n || echo "No tasks due this week."
       ;;
 
