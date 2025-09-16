@@ -92,23 +92,28 @@ task() {
 
     done|d)
       if [[ "$2" =~ ^[0-9]+$ ]]; then
-        local task_num=$2
-
-        # Get the Nth pending task directly
-        local line_info=$(grep -n -F -- "- [ ]" "$TASK_FILE" | sed -n "${task_num}p")
-
-        if [[ -z "$line_info" ]]; then
-          echo "Error: Task number out of range. Run 'task pending' to see available tasks."
-          return 1
-        fi
-
-        # Extract the actual line number in the task file
-        local file_line_num=$(echo "$line_info" | cut -d':' -f1)
-
-        # Mark as completed with date
+        # Get list of pending tasks once before making any changes
+        local pending_tasks=$(grep -n -F -- "- [ ]" "$TASK_FILE")
         local completion_date=$(date -u +"%Y-%m-%d")
-        sed -i "${file_line_num}s/- \\[ \\]/- \\[x\\] ✅ $completion_date/" "$TASK_FILE"
-        echo "Task $task_num marked as completed"
+
+        # Process each task number
+        for task_num in "${@:2}"; do
+          if [[ "$task_num" =~ ^[0-9]+$ ]]; then
+            local line_info=$(echo "$pending_tasks" | sed -n "${task_num}p")
+
+            if [[ -z "$line_info" ]]; then
+              echo "Error: Task number out of range. Run 'task pending' to see available tasks."
+              continue
+            fi
+
+            # Extract line number and mark as completed
+            local file_line_num=$(echo "$line_info" | cut -d':' -f1)
+            sed -i "${file_line_num}s/- \\[ \\]/- \\[x\\] ✅ $completion_date/" "$TASK_FILE"
+            echo "Task $task_num marked as completed"
+          else
+            echo "Error: Invalid task number: $task_num"
+          fi
+        done
       else
         # List completed tasks
         echo "Completed tasks:"
