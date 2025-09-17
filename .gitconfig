@@ -1,6 +1,12 @@
 [user]
-   email = "" ; Fill in
+    email = "" ; Fill in
     name = "" ; Fill in
+    signingkey = ; Fill in
+
+[gpg]
+    format = ssh
+[tag]
+	gpgsign = true
 
 [core]
    editor = nvim
