@@ -4,8 +4,12 @@
     signingkey = ; Fill in
 
 [gpg]
-    format = ssh
+	format = ssh
+
 [tag]
+	gpgsign = true
+
+[commit]
 	gpgsign = true
 
 [core]
@@ -29,13 +33,17 @@
    default = simple
    autoSetupRemote = true # Eliminates --set-upstream verbose commands
 
-[merge]
-   conflictstyle = diff3 # Shows original, yours, and theirs during conflicts
-   tool = vscode
-
 [diff]
    algorithm = histogram # Better diff performance and readability
    colorMoved = default
+
+[merge]
+    tool = nvim
+
+[mergetool "nvim"]
+    cmd = "nvim -d -c 'wincmd l' -c 'norm ]c' '$LOCAL' '$MERGED' '$REMOTE'"
+    keepBackup = false
+    prompt = false
 
 [rerere]
    enabled = true # Remembers conflict resolutions for repeated merges
