@@ -346,7 +346,7 @@ function activate-venv() {
 }
 ## Python
 
-# Deno
+## Deno
 . "$HOME/.deno/env"
 
 # Print todo list - https://github.com/ai-mindset/config/blob/main/task.sh
@@ -356,6 +356,12 @@ if command -v glow &>/dev/null; then
 else
     task pending
 fi
+## Deno
+
+## Rust and Cargo
+export PATH="$HOME/.cargo/bin:$PATH"
+. "$HOME/.cargo/env"
+## Rust and Cargo
 
 ## Claude Code
 # If Claude Code is not installed
