@@ -162,38 +162,12 @@ fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)  # append completions t
 export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"  # asdf-erlang https://github.com/asdf-vm/asdf-erlang
 ## asdf > v0.16
 
-
 rm -f ~/.zsh_history
 # $ crontab -e
 # @daily name_of_script.sh
 
-## Ollama
-export OLLAMA_MODELS="/usr/share/ollama/.ollama/models"
-
-function update_ollama_fortnightly() {
-    local last_run_file="$HOME/.last_fortnightly_run"
-    local current_time=$(date +%s)
-    local two_weeks=1209600  # seconds in 2 weeks
-
-    # Create the file if it doesn't exist
-    if [[ ! -f $last_run_file ]]; then
-        echo "0" > "$last_run_file"
-    fi
-
-    local last_run=$(cat "$last_run_file")
-    local time_diff=$((current_time - last_run))
-
-    if [[ $time_diff -ge $two_weeks ]]; then
-        echo "Running ollama script..."
-        curl -fsSL https://ollama.com/install.sh | sh
-
-        # Update the last run time
-        echo "$current_time" > "$last_run_file"
-    fi
-}
-
-update_ollama_fortnightly
-## Ollama
+# llama.cpp
+export PATH=$HOME/AppImages/llama.cpp/bin:$PATH
 
 ## List big packages
 function list_big_packages() {
