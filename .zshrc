@@ -318,6 +318,18 @@ function activate-venv() {
   # now force-restore the rest of the PATH
   export PATH="$VIRTUAL_ENV/bin:$_OLD_PATH"
 }
+
+# Autoload .venv when it exists in dir. Deactivate when navigating out of dir
+function python_venv() {
+    MYVENV="./.venv"
+    # Activate if .venv exists
+    [[ -d $MYVENV ]] && source $MYVENV/bin/activate > /dev/null 2>&1
+    # Deactivate if leaving the directory
+    [[ ! -d $MYVENV ]] && deactivate > /dev/null 2>&1
+}
+
+autoload -U add-zsh-hook
+add-zsh-hook chpwd python_venv
 ## Python
 
 ## Deno
