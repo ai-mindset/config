@@ -321,15 +321,32 @@ function activate-venv() {
 
 # Autoload .venv when it exists in dir. Deactivate when navigating out of dir
 function python_venv() {
-    MYVENV="./.venv"
-    # Activate if .venv exists
-    [[ -d $MYVENV ]] && source $MYVENV/bin/activate > /dev/null 2>&1
-    # Deactivate if leaving the directory
-    [[ ! -d $MYVENV ]] && deactivate > /dev/null 2>&1
+    local MYVENV="./.venv"
+
+    # If .venv exists in this directory
+    if [[ -d $MYVENV ]]; then
+        # Get absolute path to this directory's .venv
+        local THIS_VENV="$(cd "$MYVENV" && pwd)"
+
+        # If no venv is active or a different one is active
+        if [[ -z "$VIRTUAL_ENV" || "$VIRTUAL_ENV" != "$THIS_VENV" ]]; then
+            # Deactivate any existing venv
+            [[ -n "$VIRTUAL_ENV" ]] && deactivate > /dev/null 2>&1
+            # Activate this one
+            source $MYVENV/bin/activate > /dev/null 2>&1
+        fi
+    # If no .venv exists and a venv is active, deactivate it
+    elif [[ -n "$VIRTUAL_ENV" ]]; then
+        deactivate > /dev/null 2>&1
+    fi
 }
 
-autoload -U add-zsh-hook
+# Add to the chpwd hook to run whenever directory changes
+autoload -Uz add-zsh-hook
 add-zsh-hook chpwd python_venv
+
+# Run once at shell startup to handle the initial directory
+python_venv
 ## Python
 
 ## Deno
