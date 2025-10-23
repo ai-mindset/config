@@ -349,6 +349,12 @@ add-zsh-hook chpwd python_venv
 python_venv
 ## Python
 
+# >>> juliaup initialize >>>
+# !! Contents within this block are managed by juliaup !!
+path=('$HOME/.juliaup/bin' $path)
+export PATH
+# <<< juliaup initialize <<<
+
 ## Deno
 . "$HOME/.deno/env"
 
