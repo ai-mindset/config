@@ -275,19 +275,6 @@ _epub2md() {
 compdef _epub2md epub2md
 ## Convert .epub to .md
 
-## Completion
-fpath=(~/.zsh/completion $fpath)
-# Zsh speedup - Smarter completion initialization
-autoload -Uz compinit
-if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
-    compinit
-else
-    compinit -C
-fi
-# Load git completions for aliases
-zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
-## Completion
-
 ## Python
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
@@ -349,17 +336,24 @@ add-zsh-hook chpwd python_venv
 python_venv
 ## Python
 
+# >>> juliaup initialize >>>
+# !! Contents within this block are managed by juliaup !!
+path=("$HOME/.juliaup/bin" $path)
+export PATH
+# <<< juliaup initialize <<<
+
 ## Deno
 . "$HOME/.deno/env"
+## Deno
 
-# Print todo list - https://github.com/ai-mindset/config/blob/main/task.sh
+## todo list
 # Save in PATH, as `task`
 if command -v glow &>/dev/null; then
     task pending | glow
 else
     task pending
 fi
-## Deno
+## todo list
 
 ## Rust and Cargo
 export PATH="$HOME/.cargo/bin:$PATH"
@@ -395,3 +389,16 @@ az config set core.collect_telemetry=no --only-show-errors
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 ## Powerlevel10k
+
+## Completion
+fpath=(~/.zsh/completion $fpath)
+# Zsh speedup - Smarter completion initialization
+autoload -Uz compinit
+if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+    compinit
+else
+    compinit -C
+fi
+# Load git completions for aliases
+zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
+## Completion
