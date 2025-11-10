@@ -135,7 +135,7 @@ export EDITOR="nvim"
 alias tmux='tmux -S ~/.tmux/dev'
 
 ## Show git status on ls
-ls() {
+function ls {
   # If we’re inside a Git repository, show the short status first
   git rev-parse --is-inside-work-tree &>/dev/null && git status --short --branch
   # Run the real ls with whatever arguments were passed
