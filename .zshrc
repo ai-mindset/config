@@ -260,7 +260,7 @@ alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## PiperTTS
 PATH=$PATH:$HOME/AppImage/piper
 export PATH
-alias piper="piper --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
+alias piper="piper-tts --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
 ## PiperTTS
 
 ## Convert .epub to .md
