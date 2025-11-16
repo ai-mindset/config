@@ -87,11 +87,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-    git
-    colored-man-pages
-    asdf # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
-)
+plugins=(git colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -108,8 +104,6 @@ source $ZSH/oh-my-zsh.sh
 # else
 #   export EDITOR='mvim'
 # fi
-
-
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -140,6 +134,15 @@ export EDITOR="nvim"
 [[ -d ~/.tmux ]] || mkdir ~/.tmux
 alias tmux='tmux -S ~/.tmux/dev'
 
+## Show git status on ls
+function ls {
+  # If we’re inside a Git repository, show the short status first
+  git rev-parse --is-inside-work-tree &>/dev/null && git status --short --branch
+  # Run the real ls with whatever arguments were passed
+  command ls "$@"
+}
+## Show git status on ls
+
 ## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
 # Define path to your log file
 log_task() {
@@ -155,19 +158,9 @@ log_task() {
 }
 ## log tasks
 
-## asdf > v0.16
-export PATH=$HOME/.asdf/bin:$PATH
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)  # append completions to fpath
-export KERL_CONFIGURE_OPTIONS="--disable-debug --without-javac"  # asdf-erlang https://github.com/asdf-vm/asdf-erlang
-## asdf > v0.16
-
 rm -f ~/.zsh_history
 # $ crontab -e
 # @daily name_of_script.sh
-
-# llama.cpp
-export PATH=$HOME/AppImages/llama.cpp/bin:$PATH
 
 ## List big packages
 function list_big_packages() {
@@ -337,11 +330,8 @@ add-zsh-hook chpwd python_venv
 python_venv
 ## Python
 
-# >>> juliaup initialize >>>
-# !! Contents within this block are managed by juliaup !!
-path=("$HOME/.juliaup/bin" $path)
-export PATH
-# <<< juliaup initialize <<<
+## PiperTTS - Already configured above
+## PiperTTS
 
 ## Deno
 . "$HOME/.deno/env"
