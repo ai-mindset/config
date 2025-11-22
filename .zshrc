@@ -206,7 +206,8 @@ function replace() {
 ## General aliases
 alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
 alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
-alias yt-dlp_subs="yt-dlp --write-subs --write-auto-sub --skip-download --sub-format \"txl\" "
+# --list-subs: en        English vtt, srt, ttml, srv3, srv2, srv1, json3
+alias yt-dlp_subs="yt-dlp --write-subs --write-auto-sub --skip-download --sub-format \"srt\" "
 alias font_recache="sudo fc-cache -f -v"
 alias pip_rm_all="pip freeze | xargs pip uninstall -y"
 alias url_IP="dig +trace"
@@ -250,6 +251,15 @@ alias grep="grep --color=auto"
 alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## General aliases
 
+## yt-dlp download multiple video subs
+function yt-dlp_multi_subs() {
+find . -type f -iname '*.mp4' | while read file; do
+  youtube_id=$(basename "$file" .mp4 | grep -o '\[.*\]' | tr -d '[]')
+  yt-dlp_subs "https://youtu.be/$youtube_id"
+done
+}
+## yt-dlp download multiple video subs
+
 ## PiperTTS
 PATH=$PATH:$HOME/AppImage/piper
 export PATH
@@ -257,13 +267,13 @@ alias piper="piper-tts --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
 ## PiperTTS
 
 ## Convert .epub to .md
-epub2md() {
+function epub2md() {
   local input="$1"
   local output="${2:-${input%.*}.md}"
   pandoc -f epub -t html "$input" | lynx -dump -stdin -nomargins -width=1000 > "$output"
 }
 # Add completion definition
-_epub2md() {
+function _epub2md() {
   _arguments '1:epub file:_files -g "*.epub"' '2:output file:_files'
 }
 compdef _epub2md epub2md
@@ -273,7 +283,7 @@ compdef _epub2md epub2md
 # uv uvx
 export PATH=$HOME/.local/bin:$PATH
 # Fix completions for uv run https://github.com/astral-sh/uv/issues/8432#issuecomment-2867318195
-_uv_run_mod() {
+function _uv_run_mod() {
     if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
         _arguments '*:filename:_files'
     else
@@ -283,7 +293,7 @@ _uv_run_mod() {
 compdef _uv_run_mod uv
 
 # Clean __pycache__
-clean_pycache() {
+function clean_pycache() {
   local target_dir="${1:-.}"
   find "$target_dir" -type d -name "__pycache__" -print -exec rm -rf {} \; 2>/dev/null
   echo "Cleaned __pycache__ directories from $target_dir"
@@ -329,9 +339,6 @@ add-zsh-hook chpwd python_venv
 # Run once at shell startup to handle the initial directory
 python_venv
 ## Python
-
-## PiperTTS - Already configured above
-## PiperTTS
 
 ## Deno
 . "$HOME/.deno/env"
