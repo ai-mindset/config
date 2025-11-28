@@ -368,7 +368,6 @@ fi
 # https://support.anthropic.com/en/articles/11940350-claude-code-model-configuration
 export ANTHROPIC_MODEL_3="claude-3-7-sonnet-20250219"
 export ANTHROPIC_MODEL_4="claude-sonnet-4-20250514"
-alias claude3.7="claude --model $ANTHROPIC_MODEL_3"
 alias claude4="claude --model $ANTHROPIC_MODEL_4"
 ## Claude Code
 
