@@ -341,7 +341,9 @@ python_venv
 ## Python
 
 ## Deno
-. "$HOME/.deno/env"
+# if .deno exists, source the env file
+[ -f "$HOME/.deno/env" ] && 
+    . "$HOME/.deno/env"
 ## Deno
 
 ## todo list
@@ -355,7 +357,9 @@ fi
 
 ## Rust and Cargo
 export PATH="$HOME/.cargo/bin:$PATH"
-. "$HOME/.cargo/env"
+# If .cargo exists, source the env file
+[ -f "$HOME/.cargo/env" ] && 
+    . "$HOME/.cargo/env"
 ## Rust and Cargo
 
 ## Claude Code
@@ -366,7 +370,7 @@ if !command -v claude &>/dev/null; then
 fi
 
 # https://support.anthropic.com/en/articles/11940350-claude-code-model-configuration
-export ANTHROPIC_MODEL_3="claude-3-7-sonnet-20250219"
+# export ANTHROPIC_MODEL_3="claude-3-7-sonnet-20250219" # Model was probably sunset recently
 export ANTHROPIC_MODEL_4="claude-sonnet-4-20250514"
 alias claude4="claude --model $ANTHROPIC_MODEL_4"
 ## Claude Code
