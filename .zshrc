@@ -346,6 +346,11 @@ python_venv
     . "$HOME/.deno/env"
 ## Deno
 
+## Zig - https://ziglang.org/download/
+export ZIG_HOME="$HOME/.zig"
+export PATH="$ZIG_HOME:$PATH"
+## Zig
+
 ## todo list
 # Save in PATH, as `task`
 if command -v glow &>/dev/null; then
