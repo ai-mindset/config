@@ -20,7 +20,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="powerlevel10k/powerlevel10k" #"minimal"
+ZSH_THEME="simple" #"minimal"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
 # POWERLEVEL9K_DISABLE_RPROMPT=true
 # POWERLEVEL9K_PROMPT_ON_NEWLINE=true
@@ -145,7 +145,7 @@ function ls {
 
 ## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
 # Define path to your log file
-log_task() {
+function log_task() {
     local TASK_FILE="$HOME/Documents/work_log.md"
     # Get current ISO 8601 timestamp
     local timestamp=$(date -u +"%Y-%m-%d")
@@ -246,8 +246,9 @@ alias podman_rmc="podman rm -f $(podman ps -aq)"
 alias podman_rmi="podman rmi $(podman images -aq)"
 alias podman_prune="podman system prune -af --volumes"
 alias podman_build_run="podman_prune && podman build -t my-container . && podman run -it my-container"
-alias git_prune='git fetch -p && git branch -vv | grep ": gone]" | awk "{print \$1}" > /tmp/gone_branches && cat /tmp/gone_branches | { echo "Delete these local branches that no longer exist on remote? [y/N]"; cat; } && read -q "REPLY?Proceed? " && git branch -D $(cat /tmp/gone_branches)'
 alias grep="grep --color=auto"
+# alias git_prune='git branch | grep -v main | xargs -r git branch -D'
+alias git_prune='git for-each-ref --format="%(refname:short)" refs/heads/ | grep -v main | while read branch; do git branch -D "$branch" 2>/dev/null && echo "Deleted: $branch"; done'
 alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
 ## General aliases
 
@@ -342,10 +343,10 @@ python_venv
 
 ## Deno
 # if .deno exists, source the env file
-[ -f "$HOME/.deno/env" ] && 
+[ -f "$HOME/.deno" ] && 
     . "$HOME/.deno/env"
 ## Deno
-
+ 
 ## Zig - https://ziglang.org/download/
 export ZIG_HOME="$HOME/.zig"
 export PATH="$ZIG_HOME:$PATH"
