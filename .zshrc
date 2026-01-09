@@ -352,6 +352,12 @@ export ZIG_HOME="$HOME/.zig"
 export PATH="$ZIG_HOME:$PATH"
 ## Zig
 
+## Go 
+if [ -d /usr/local/go/bin ]; then
+    export PATH=$PATH:/usr/local/go/bin
+fi
+## Go
+
 ## todo list
 # Save in PATH, as `task`
 if command -v glow &>/dev/null; then
@@ -360,13 +366,6 @@ else
     task pending
 fi
 ## todo list
-
-## Rust and Cargo
-export PATH="$HOME/.cargo/bin:$PATH"
-# If .cargo exists, source the env file
-[ -f "$HOME/.cargo/env" ] && 
-    . "$HOME/.cargo/env"
-## Rust and Cargo
 
 ## Claude Code
 # If Claude Code is not installed
