@@ -378,6 +378,11 @@ fi
 # export ANTHROPIC_MODEL_3="claude-3-7-sonnet-20250219" # Model was probably sunset recently
 export ANTHROPIC_MODEL_4="claude-sonnet-4-20250514"
 alias claude4="claude --model $ANTHROPIC_MODEL_4"
+# https://code.claude.com/docs/en/settings#environment-variables
+export DISABLE_AUTOUPDATER=1
+export DISABLE_BUG_COMMAND=1 
+export DISABLE_ERROR_REPORTING=1  
+export DISABLE_TELEMETRY=1
 ## Claude Code
 
 ## Node Version Manager
