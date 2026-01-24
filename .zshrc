@@ -341,12 +341,6 @@ add-zsh-hook chpwd python_venv
 python_venv
 ## Python
 
-## Deno
-# if .deno exists, source the env file
-[ -f "$HOME/.deno" ] && 
-    . "$HOME/.deno/env"
-## Deno
- 
 ## Zig - https://ziglang.org/download/
 export ZIG_HOME="$HOME/.zig"
 export PATH="$ZIG_HOME:$PATH"
