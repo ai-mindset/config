@@ -346,12 +346,10 @@ export ZIG_HOME="$HOME/.zig"
 export PATH="$ZIG_HOME:$PATH"
 ## Zig
 
-## Nim 
-export NIMBLE_HOME="$HOME/.nimble"
-if [ -d "$NIMBLE_HOME/bin" ] ; then
-    export PATH="$NIMBLE_HOME/bin:$PATH"
-fi
-## Nim
+## Go 
+export GOPATH="/usr/local/go"
+export PATH="$GOPATH:$PATH"
+## Go 
 
 ## todo list
 # Save in PATH, as `task`
