@@ -347,8 +347,10 @@ export PATH="$ZIG_HOME:$PATH"
 ## Zig
 
 ## Go 
-export GOPATH="/usr/local/go"
+export GOPATH="$HOME/go"
 export PATH="$GOPATH:$PATH"
+export GOROOT="/usr/local/go"
+export PATH="$GOROOT/bin:$PATH"
 ## Go 
 
 ## todo list
