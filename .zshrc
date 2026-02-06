@@ -346,12 +346,14 @@ export ZIG_HOME="$HOME/.zig"
 export PATH="$ZIG_HOME:$PATH"
 ## Zig
 
-## Go 
-export GOPATH="$HOME/go"
-export PATH="$GOPATH:$PATH"
-export GOROOT="/usr/local/go"
-export PATH="$GOROOT/bin:$PATH"
-## Go 
+## asdf version manager
+export ASDF_DIR="$HOME/.asdf"
+export PATH="$ASDF_DIR/bin:$ASDF_DIR/shims:$PATH"
+## asdf version manager
+
+## Elixir 
+alias burrito='mix deps.get && MIX_ENV=prod mix release $1 --overwrite'
+## Elixir
 
 ## todo list
 # Save in PATH, as `task`
