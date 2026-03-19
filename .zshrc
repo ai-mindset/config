@@ -360,6 +360,13 @@ alias sbcl="rlwrap -r sbcl"
 ## SBCL 
 
 ## opencode
+# --- server management ---
+tunnel-up()   { ssh -fN server && echo "tunnel up"; }
+tunnel-down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
+opencode_ollama() { tunnel-up && opencode }
+# --- server management ---
+
+# opencode
 # If opencode is not installed
 if !command -v opencode &>/dev/null; then
     echo "Opencode is not installed. Please install it by running `curl -fsSL https://opencode.ai/install | bash`"
