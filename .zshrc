@@ -355,14 +355,25 @@ export PATH="$ASDF_DIR/bin:$ASDF_DIR/shims:$PATH"
 alias burrito='mix deps.get && MIX_ENV=prod mix release $1 --overwrite'
 ## Elixir
 
-## todo list
-# Save in PATH, as `task`
-if command -v glow &>/dev/null; then
-    task pending | glow
-else
-    task pending
+## SBCL
+alias sbcl="rlwrap -r sbcl"
+## SBCL 
+
+## opencode
+# --- server management ---
+tunnel-up()   { ssh -fN server && echo "tunnel up"; }
+tunnel-down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
+opencode_ollama() { tunnel-up && opencode }
+# --- server management ---
+
+# opencode
+# If opencode is not installed
+if !command -v opencode &>/dev/null; then
+    echo "Opencode is not installed. Please install it by running `curl -fsSL https://opencode.ai/install | bash`"
+    exit 1
 fi
-## todo list
+export PATH=$HOME/.opencode/bin:$PATH
+## opencode
 
 ## Claude Code
 # If Claude Code is not installed
@@ -412,3 +423,4 @@ fi
 # Load git completions for aliases
 zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
 ## Completion
+
