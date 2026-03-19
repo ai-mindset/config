@@ -27,7 +27,7 @@ MODEL_ENTRIES=$(echo "$MODELS" | python3 -c "
 import sys,json
 for m in json.load(sys.stdin)['data']:
     mid=m['id']; name=mid.split(':')[0].replace('-',' ').title()
-    print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true}},')
+    print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
 " | sed '$ s/,$//')
 
 cat > ~/.config/opencode/opencode.json <<EOF
@@ -36,7 +36,7 @@ cat > ~/.config/opencode/opencode.json <<EOF
     "provider": {
         "ollama": {
             "npm": "@ai-sdk/openai-compatible",
-            "name": "Ollama",
+            "name": "Ollama (server)",
             "options": {
                 "baseURL": "http://127.0.0.1:11434/v1"
             },
