@@ -249,6 +249,7 @@ alias podman_build_run="podman_prune && podman build -t my-container . && podman
 alias grep="grep --color=auto"
 # alias git_prune='git branch | grep -v main | xargs -r git branch -D'
 alias git_prune='git for-each-ref --format="%(refname:short)" refs/heads/ | grep -v main | while read branch; do git branch -D "$branch" 2>/dev/null && echo "Deleted: $branch"; done'
+alias dropcache='sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"' # Free up memory by dropping caches. Use with caution, as it can impact performance temporarily.
 ## General aliases
 
 ## yt-dlp download multiple video subs
