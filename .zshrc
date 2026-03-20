@@ -363,8 +363,9 @@ alias sbcl="rlwrap -r sbcl"
 # --- server management ---
 tunnel_up()   { ssh -fN server && echo "tunnel up"; }
 tunnel_down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
-opencode_ollama() { tunnel-up && opencode }
+opencode_ollama() { tunnel_up && opencode }
 ollama_clean() { sudo find /usr/share/ollama/.ollama/models/blobs -name "*-partial" -delete -print }
+server_sleep() { ssh server 'systemctl suspend' && echo "server suspended"; }
 # --- server management ---
 
 # If opencode is not installed
