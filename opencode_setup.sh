@@ -21,16 +21,23 @@ Host server
     ServerAliveCountMax 3
 EOF
 
-mkdir -p ~/.config/opencode
-MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models")
+# Check if ~/.opencode/opencode.json exists and contains an entry for "ollama"
+mkdir -p ~/.opencode
+if [[ -f ~/.opencode/opencode.json ]] && grep -q '"ollama"' ~/.opencode/opencode.json; then
+    echo "OpenCode config already contains 'ollama' entry, skipping"
+    exit 0
+fi
+
+echo "Creating OpenCode config..."
+MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models | jq")
 MODEL_ENTRIES=$(echo "$MODELS" | python3 -c "
 import sys,json
 for m in json.load(sys.stdin)['data']:
     mid=m['id']; name=mid.split(':')[0].replace('-',' ').title()
-    print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
+    print(f'        \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
 " | sed '$ s/,$//')
 
-cat > ~/.config/opencode/opencode.json <<EOF
+cat > ~/.opencode/opencode.json <<EOF
 {
     "\$schema": "https://opencode.ai/config.json",
     "provider": {
@@ -47,5 +54,6 @@ ${MODEL_ENTRIES}
     }
 }
 EOF
+
 
 echo "\n✅ Done. Run 'ssh -fN server' to start the tunnel, then 'opencode' in any project."
