@@ -249,7 +249,7 @@ alias podman_build_run="podman_prune && podman build -t my-container . && podman
 alias grep="grep --color=auto"
 # alias git_prune='git branch | grep -v main | xargs -r git branch -D'
 alias git_prune='git for-each-ref --format="%(refname:short)" refs/heads/ | grep -v main | while read branch; do git branch -D "$branch" 2>/dev/null && echo "Deleted: $branch"; done'
-alias rm_pycache="find . -type d -name "__pycache__" -exec rm -r {} +"
+alias dropcache='sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"' # Free up memory by dropping caches. Use with caution, as it can impact performance temporarily.
 ## General aliases
 
 ## yt-dlp download multiple video subs
@@ -293,8 +293,8 @@ function _uv_run_mod() {
 }
 compdef _uv_run_mod uv
 
-# Clean __pycache__
-function clean_pycache() {
+# Clear __pycache__
+function clear_pycache() {
   local target_dir="${1:-.}"
   find "$target_dir" -type d -name "__pycache__" -print -exec rm -rf {} \; 2>/dev/null
   echo "Cleaned __pycache__ directories from $target_dir"
@@ -359,21 +359,35 @@ alias burrito='mix deps.get && MIX_ENV=prod mix release $1 --overwrite'
 alias sbcl="rlwrap -r sbcl"
 ## SBCL 
 
-## opencode
+## OpenCode
 # --- server management ---
-tunnel-up()   { ssh -fN server && echo "tunnel up"; }
-tunnel-down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
-opencode_ollama() { tunnel-up && opencode }
+tunnel_up()   { ssh -fN server && echo "tunnel up"; }
+tunnel_down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
+opencode_ollama() { tunnel_up && opencode }
+ollama_clean() { sudo find /usr/share/ollama/.ollama/models/blobs -name "*-partial" -delete -print }
+server_sleep() { systemctl suspend && echo "server suspended"; }
 # --- server management ---
 
-# opencode
 # If opencode is not installed
 if !command -v opencode &>/dev/null; then
-    echo "Opencode is not installed. Please install it by running `curl -fsSL https://opencode.ai/install | bash`"
+    echo "OpenCode is not installed. Please install it by running `curl -fsSL https://opencode.ai/install | bash`"
     exit 1
 fi
 export PATH=$HOME/.opencode/bin:$PATH
-## opencode
+
+clear_opencode_cache() {
+    rm -rf ~/.cache/opencode/*
+    echo "OpenCode cache cleared."
+}
+clear_opencode_history() {
+    rm -rf ~/.local/share/opencode/storage/*
+    echo "OpenCode history cleared."
+}
+clear_opencode() {
+    clear_opencode_cache
+    clear_opencode_history
+}
+## OpenCode 
 
 ## Claude Code
 # If Claude Code is not installed
