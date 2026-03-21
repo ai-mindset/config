@@ -21,7 +21,13 @@ Host server
     ServerAliveCountMax 3
 EOF
 
-mkdir -p ~/.config/opencode
+OPENCODE_CONFIG_DIR=~/.opencode
+# if ~/.opencode/opencode.json doesn't exist, create it with the Ollama server config and dynamic model fetching
+if [[ -f $OPENCODE_CONFIG_DIR/opencode.json ]]; then
+    echo "OpenCode config already exists at $OPENCODE_CONFIG_DIR/opencode/opencode.json, skipping"
+    exit 0
+fi 
+
 MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models")
 MODEL_ENTRIES=$(echo "$MODELS" | python3 -c "
 import sys,json
@@ -30,7 +36,7 @@ for m in json.load(sys.stdin)['data']:
     print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
 " | sed '$ s/,$//')
 
-cat > ~/.config/opencode/opencode.json <<EOF
+cat > "$OPENCODE_CONFIG_DIR/opencode.json" <<EOF
 {
     "\$schema": "https://opencode.ai/config.json",
     "provider": {
