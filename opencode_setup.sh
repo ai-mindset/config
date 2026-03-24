@@ -21,23 +21,22 @@ Host server
     ServerAliveCountMax 3
 EOF
 
-# Check if ~/.opencode/opencode.json exists and contains an entry for "ollama"
-mkdir -p ~/.opencode
-if [[ -f ~/.opencode/opencode.json ]] && grep -q '"ollama"' ~/.opencode/opencode.json; then
-    echo "OpenCode config already contains 'ollama' entry, skipping"
+OPENCODE_CONFIG_DIR=~/.opencode
+# if ~/.opencode/opencode.json doesn't exist, create it with the Ollama server config and dynamic model fetching
+if [[ -f $OPENCODE_CONFIG_DIR/opencode.json ]]; then
+    echo "OpenCode config already exists at $OPENCODE_CONFIG_DIR/opencode/opencode.json, skipping"
     exit 0
-fi
+fi 
 
-echo "Creating OpenCode config..."
-MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models | jq")
+MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models")
 MODEL_ENTRIES=$(echo "$MODELS" | python3 -c "
 import sys,json
 for m in json.load(sys.stdin)['data']:
     mid=m['id']; name=mid.split(':')[0].replace('-',' ').title()
-    print(f'        \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
+    print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
 " | sed '$ s/,$//')
 
-cat > ~/.opencode/opencode.json <<EOF
+cat > "$OPENCODE_CONFIG_DIR/opencode.json" <<EOF
 {
     "\$schema": "https://opencode.ai/config.json",
     "provider": {
@@ -54,6 +53,5 @@ ${MODEL_ENTRIES}
     }
 }
 EOF
-
 
 echo "\n✅ Done. Run 'ssh -fN server' to start the tunnel, then 'opencode' in any project."
