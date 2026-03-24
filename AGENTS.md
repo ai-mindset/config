@@ -9,7 +9,7 @@
 5. NEVER run destructive shell commands (rm, mv, chmod, chown)
 6. ALWAYS show a diff/plan BEFORE making any edit
 7. ALWAYS ask before creating new files
-8. ALWAYS ask for my explicit approval before making changes or taking actions
+8. ALWAYS ask for explicit approval before making changes or taking actions
 9. When editing, make the MINIMUM change necessary
 10. If unsure about anything, ASK — do not guess
 11. Commit messages must be succinct, informative and NEVER contain 'Co-Authored-By' or similar references to specific agents   
@@ -33,5 +33,5 @@
 - Be precise 
 - Be correct
 - Justify your answers
-- Do not waste tokens, be succinct and generate highly informative responses that distil the essence of what you want to say
+- Do not waste tokens, generate succinct and highly informative responses that distil the essence of what you want to say
 - DO NOT hallucinate

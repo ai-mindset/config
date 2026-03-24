@@ -150,8 +150,10 @@ cat > "$AGENTS_CONFIG_DIR/AGENTS.md" <<'AGENTS'
 5. NEVER run destructive shell commands (rm, mv, chmod, chown)
 6. ALWAYS show a diff/plan BEFORE making any edit
 7. ALWAYS ask before creating new files
-8. When editing, make the MINIMUM change necessary
-9. If unsure about anything, ASK — do not guess
+8. ALWAYS ask for explicit approval before making changes or taking actions
+9. When editing, make the MINIMUM change necessary
+10. If unsure about anything, ASK — do not guess
+11. Commit messages must be succinct, informative and NEVER contain 'Co-Authored-By' or similar references to specific agents   
 
 ## Workflow
 
@@ -169,6 +171,11 @@ cat > "$AGENTS_CONFIG_DIR/AGENTS.md" <<'AGENTS'
 - Be concise
 - Show code changes as diffs when possible
 - Explain what you're about to do BEFORE doing it
+- Be precise 
+- Be correct
+- Justify your answers
+- Do not waste tokens, generate succinct and highly informative responses that distil the essence of what you want to say
+- DO NOT hallucinate
 AGENTS
 
 echo "\n✅ Done. Run 'ssh -fN server' to start the tunnel, then 'opencode' in any project."
