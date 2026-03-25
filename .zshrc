@@ -364,8 +364,48 @@ alias sbcl="rlwrap -r sbcl"
 tunnel_up()   { ssh -fN server && echo "tunnel up"; }
 tunnel_down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
 opencode_ollama() { tunnel_up && opencode }
-ollama_clean() { sudo find /usr/share/ollama/.ollama/models/blobs -name "*-partial" -delete -print }
 server_sleep() { systemctl suspend && echo "server suspended"; }
+ollama_clean() { sudo find /usr/share/ollama/.ollama/models/blobs -name "*-partial" -delete -print }
+# Ollama model list with descriptions
+ollama_list() {
+    if ! command -v ollama &>/dev/null; then
+        echo "ollama is not installed."
+        return 1
+    fi
+
+    local cache_file="$HOME/.ollama_descriptions.cache"
+    local cache_max_age=$((7 * 24 * 60 * 60))
+
+    # Refresh if cache missing or stale
+    local needs_refresh=0
+    if [[ ! -f "$cache_file" ]]; then
+        needs_refresh=1
+    else
+        local now=$(date +%s)
+        local mtime=$(stat -f %m "$cache_file" 2>/dev/null || stat -c %Y "$cache_file")
+        (( now - mtime > cache_max_age )) && needs_refresh=1
+    fi
+
+    if (( needs_refresh )); then
+        echo "Refreshing model descriptions..."
+        local tmpfile=$(mktemp)
+        ollama list | tail -n +2 | awk '{print $1}' | while read -r model; do
+            local base="${model%%:*}"
+            local desc=$(curl -s "https://ollama.com/library/$base" \
+                | grep -oP '(?<=<meta name="description" content=")[^"]+' \
+                | head -1)
+            [[ -z "$desc" ]] && desc="No description available"
+            echo "${model}|${desc}" >> "$tmpfile"
+        done
+        mv "$tmpfile" "$cache_file"
+    fi
+
+    printf "%-40s %s\n" "MODEL" "DESCRIPTION"
+    printf "%-40s %s\n" "-----" "-----------"
+    while IFS='|' read -r model desc; do
+        printf "%-40s %s\n" "$model" "$desc"
+    done < "$cache_file"
+}
 # --- server management ---
 
 # If opencode is not installed
