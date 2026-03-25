@@ -40,7 +40,10 @@ MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models")
 MODEL_ENTRIES=$(echo "$MODELS" | python3 -c "
 import sys,json
 for m in json.load(sys.stdin)['data']:
-    mid=m['id']; name=mid.split(':')[0].replace('-',' ').title()
+    mid=m['id']
+    if 'embed' in mid.lower():
+        continue
+    name=mid.split(':')[0].replace('-',' ').title()
     print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
 " | sed '$ s/,$//')
 
