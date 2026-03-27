@@ -53,7 +53,7 @@ sudo mkdir -p /etc/systemd/system/ollama.service.d
 sudo tee /etc/systemd/system/ollama.service.d/override.conf > /dev/null <<'EOF'
 [Service]
 Environment="OLLAMA_HOST=127.0.0.1:11434"
-Environment="OLLAMA_KEEP_ALIVE=15m"
+Environment="OLLAMA_KEEP_ALIVE=1h"
 Environment="OLLAMA_NUM_PARALLEL=2"
 Environment="OLLAMA_FLASH_ATTENTION=1"
 Environment="HSA_OVERRIDE_GFX_VERSION=11.5.1"
