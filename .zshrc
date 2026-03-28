@@ -422,6 +422,7 @@ clear_opencode_cache() {
 clear_opencode_history() {
     rm -rf ~/.local/share/opencode/{storage,tool-output,log,snapshot}/*
     rm -rf ~/.local/share/opencode/opencode.db*
+    rm -rf ~/.local/state/opencode/*
     echo "OpenCode history cleared."
 }
 clear_opencode() {
