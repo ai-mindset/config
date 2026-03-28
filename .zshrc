@@ -420,7 +420,8 @@ clear_opencode_cache() {
     echo "OpenCode cache cleared."
 }
 clear_opencode_history() {
-    rm -rf ~/.local/share/opencode/storage/*
+    rm -rf ~/.local/share/opencode/{storage,tool-output,log,snapshot}/*
+    rm -rf ~/.local/share/opencode/opencode.db*
     echo "OpenCode history cleared."
 }
 clear_opencode() {
