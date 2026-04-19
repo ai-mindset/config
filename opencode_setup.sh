@@ -43,7 +43,8 @@ for m in json.load(sys.stdin)['data']:
     mid=m['id']
     if 'embed' in mid.lower():
         continue
-    name=mid.split(':')[0].replace('-',' ').title()
+    parts=mid.replace('-',' ').split(':')
+    name=parts[0].title()+' '+parts[1] if ':' in mid else parts[0].title()
     print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
 " | sed '$ s/,$//')
 
