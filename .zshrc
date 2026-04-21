@@ -158,6 +158,10 @@ function log_task() {
 }
 ## log tasks
 
+## task 
+task p
+## task
+
 rm -f ~/.zsh_history
 # $ crontab -e
 # @daily name_of_script.sh
