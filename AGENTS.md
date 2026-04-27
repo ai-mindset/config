@@ -13,6 +13,7 @@
 9. When editing, make the MINIMUM change necessary
 10. If unsure about anything, ASK — do not guess
 11. Commit messages must be succinct, informative and NEVER contain 'Co-Authored-By' or similar references to specific agents   
+12. NEVER add comments to code that are not strictly necessary for understanding the code, and NEVER add comments that reference specific agents or users
 
 ## Workflow
 
