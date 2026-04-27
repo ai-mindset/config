@@ -2,6 +2,7 @@
 
 ## CRITICAL SAFETY RULES — NEVER VIOLATE
 
+0. ALWAYS search the API documentation of whichever technology we're using in our project e.g. https://hexdocs.pm/elixir/1.19.5/Kernel.html, https://pkg.go.dev/std etc.
 1. NEVER commit to git without explicit user approval
 2. NEVER push to any remote
 3. NEVER delete files without explicit user approval
