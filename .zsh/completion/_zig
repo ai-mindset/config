@@ -1,0 +1,69 @@
+#compdef zig
+
+# Zig completion for zsh
+# Based on `zig --help` output - only includes verified commands and options
+# Place this file in ~/.zsh/completions/_zig
+
+local context state line
+typeset -A opt_args
+
+_zig() {
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '(-h --help)'{-h,--help}'[Print command-specific usage]' \
+        '1: :_zig_commands' \
+        '*:: :->args'
+
+    case $state in
+        args)
+            case $words[1] in
+                *)
+                    # For all subcommands, only offer the help flag since that's all we know for certain
+                    _arguments \
+                        '(-h --help)'{-h,--help}'[Print command-specific usage]' \
+                        '*:files:_files'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_zig_commands() {
+    local commands
+    # Commands taken directly from `zig --help` output
+    commands=(
+        'build:Build project from build.zig'
+        'fetch:Copy a package into global cache and print its hash'
+        'init:Initialize a Zig package in the current directory'
+        'build-exe:Create executable from source or object files'
+        'build-lib:Create library from source or object files'
+        'build-obj:Create object from source or object files'
+        'test:Perform unit testing'
+        'test-obj:Create object for unit testing'
+        'run:Create executable and run immediately'
+        'ast-check:Look for simple compile errors in any set of files'
+        'fmt:Reformat Zig source into canonical form'
+        'reduce:Minimize a bug report'
+        'translate-c:Convert C code to Zig code'
+        'ar:Use Zig as a drop-in archiver'
+        'cc:Use Zig as a drop-in C compiler'
+        'c++:Use Zig as a drop-in C++ compiler'
+        'dlltool:Use Zig as a drop-in dlltool.exe'
+        'lib:Use Zig as a drop-in lib.exe'
+        'ranlib:Use Zig as a drop-in ranlib'
+        'objcopy:Use Zig as a drop-in objcopy'
+        'rc:Use Zig as a drop-in rc.exe'
+        'env:Print lib path, std path, cache directory, and version'
+        'help:Print this help and exit'
+        'std:View standard library documentation in a browser'
+        'libc:Display native libc paths file or validate one'
+        'targets:List available compilation targets'
+        'version:Print version number and exit'
+        'zen:Print Zen of Zig and exit'
+    )
+    _describe 'command' commands
+}
+
+_zig "$@"

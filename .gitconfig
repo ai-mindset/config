@@ -1,0 +1,105 @@
+[user]
+    email = "" ; Fill in
+    name = "" ; Fill in
+    signingkey = ; Fill in
+
+[gpg]
+	format = ssh
+
+[tag]
+	gpgsign = true
+
+[commit]
+	gpgsign = true
+
+[core]
+   editor = nvim
+   autocrlf = input
+   ignorecase = false
+
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  ui = true
+  pager = true
+
+[color "status"]
+  added = green
+  changed = red bold
+  untracked = magenta bold
+
+[color "branch"]
+  remote = yellow
+
+[init]
+   defaultBranch = main
+
+[pull]
+    ff = only
+    # This forces explicit handling of divergent branches, which is ideal for professional open-source repositories because:
+    # - Prevents accidental merges - Contributors must consciously resolve conflicts
+    # - Maintains clean main branch - No automatic merge commits cluttering history
+    # - Enforces workflow discipline - Forces proper branch management and rebasing
+    # - Reduces integration errors - Failed pulls alert you to conflicts that need attention
+    # Professional organizations typically want contributors to rebase their feature branches before merging, and fast-forward only enforces this practice by failing when branches have diverged, requiring deliberate action.
+
+[push]
+   default = simple
+   autoSetupRemote = true # Eliminates --set-upstream verbose commands
+
+[diff]
+   algorithm = histogram # Better diff performance and readability
+   colorMoved = default
+
+[merge]
+    tool = nvim
+
+[mergetool "nvim"]
+    cmd = "nvim -d -c 'wincmd l' -c 'norm ]c' '$LOCAL' '$MERGED' '$REMOTE'"
+    keepBackup = false
+    prompt = false
+
+[rerere]
+   enabled = true # Remembers conflict resolutions for repeated merges
+
+[alias]
+    # Complex log formatting
+
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    lgs = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat
+
+    # Multi-step workflows
+    sync = !git fetch origin && git rebase origin/main
+    cleanup = !git branch --merged | grep -v '\\*\\|main\\|master' | xargs -n 1 git branch -d
+    unstage = reset HEAD --
+
+    # Complex status checks
+    conflicts = diff --name-only --diff-filter=U
+    modified = ls-files -m
+
+    # Stash with message
+    stash-staged = stash --keep-index
+
+    # Recent changes - what happened lately?
+    recent = log --since='1 week ago' --oneline --author-date-order
+
+    # File history - track changes to specific file
+    file-log = log --follow --patch --
+
+    # What changed in last commit?
+    last = log -1 --stat --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+
+    # Compare branches
+    compare = log --left-right --graph --cherry-pick --oneline
+
+    # Quick overview of current branch vs main
+    ahead = log main..HEAD --oneline
+    behind = log HEAD..main --oneline
+
+    # Show commits that touched specific paths
+    touched = log --oneline --name-only
+
+    # Compact view with file counts
+    compact = log --pretty=format:'%C(yellow)%h %C(blue)%ad %C(red)%an %C(reset)%s' --date=short --numstat

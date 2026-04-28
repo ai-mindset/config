@@ -1,0 +1,41 @@
+#compdef ollama
+
+_ollama() {
+    local -a commands models
+    commands=(
+        'serve:Start ollama'
+        'create:Create a model'
+        'show:Show information for a model'
+        'run:Run a model'
+        'stop:Stop a running model'
+        'pull:Pull a model from a registry'
+        'push:Push a model to a registry'
+        'signin:Sign in to ollama.com'
+        'signout:Sign out from ollama.com'
+        'list:List models'
+        'ps:List running models'
+        'cp:Copy a model'
+        'rm:Remove a model'
+        'help:Help about any command'
+    )
+
+    _arguments -C \
+        '1:command:->command' \
+        '*::arg:->args'
+
+    case "$state" in
+        command)
+            _describe 'command' commands
+            ;;
+        args)
+            case "$words[1]" in
+                run|show|stop|rm|cp|push)
+                    models=(${(f)"$(ollama list 2>/dev/null | tail -n +2 | awk '{print $1}')"})
+                    _describe 'model' models
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_ollama "$@"
