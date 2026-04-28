@@ -1,0 +1,25 @@
+# https://github.com/ollama/ollama/blob/main/docs/modelfile.md
+FROM qwen2.5-coder:14b-instruct-q4_K_M
+
+# Reduce temperature significantly to make outputs more deterministic
+PARAMETER temperature 0.3
+
+# Increase top_k and reduce top_p for more focused responses
+PARAMETER top_k 50
+PARAMETER top_p 0.7
+
+# Increase repetition penalty to avoid repetitive text
+PARAMETER repeat_penalty 1.2
+
+# Set larger context window for better comprehension
+PARAMETER num_ctx 4096
+
+# https://minimaxir.com/2025/01/write-better-code/
+SYSTEM "All code you write MUST be fully optimized.
+    'Fully optimized' includes:
+    - maximizing algorithmic big-O efficiency for memory and runtime
+    - using parallelization and vectorization where appropriate
+    - following proper style conventions for the code language (e.g. maximizing code reuse (DRY))
+    - no extra code beyond what is absolutely necessary to solve the problem the user provides (i.e. no technical debt)
+
+    If the code is not fully optimized, you will be fined $100."
