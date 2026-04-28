@@ -37,7 +37,6 @@ if [[ -f $AGENTS_CONFIG_DIR/AGENTS.md ]]; then
 fi 
 
 MODELS=$(curl -s http://127.0.0.1:11434/v1/models || ssh server "curl -s http://127.0.0.1:11434/v1/models")
-MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models")
 MODEL_ENTRIES=$(echo "$MODELS" | python3 -c "
 import sys,json
 for m in json.load(sys.stdin)['data']:
