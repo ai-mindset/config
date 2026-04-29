@@ -5,7 +5,7 @@ echo "=== Server Setup ==="
 read "HOSTNAME?Hostname: "
 read "WIFI_SSID?WiFi SSID: "
 read -s "WIFI_PASS?WiFi password: "; echo
-read "STATIC_IP?Static IP (e.g. 192.168.1.100/24): "
+read "STATIC_IP?Static IP (e.g. 192.168.1.1/5): "
 read "GATEWAY?Gateway (e.g. 192.168.1.1): "
 
 sudo hostnamectl set-hostname "$HOSTNAME"

@@ -212,6 +212,8 @@ alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
 alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
 # --list-subs: en        English vtt, srt, ttml, srv3, srv2, srv1, json3
 alias yt-dlp_subs="yt-dlp --write-subs --write-auto-sub --skip-download --sub-format \"srt\" "
+# https://github.com/yt-dlp/yt-dlp/issues/7496#issuecomment-1763510751
+alias yt-dlp_clean_subs="yt-dlp --skip-download --write-subs --write-auto-subs --sub-lang en --sub-format ttml --convert-subs srt --exec before_dl:"sed -e '/^[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9] --> [0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]$/d' -e '/^[[:digit:]]\{1,3\}$/d' -e 's/<[^>]*>//g' -e '/^[[:space:]]*$/d' -i '' %(requested_subtitles.:.filepath)#q""
 alias font_recache="sudo fc-cache -f -v"
 alias pip_rm_all="pip freeze | xargs pip uninstall -y"
 alias url_IP="dig +trace"
