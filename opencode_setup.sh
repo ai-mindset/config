@@ -81,6 +81,7 @@ ${MODEL_ENTRIES}
             "git reset *": "deny",
             "git rebase *": "deny",
             "rm *": "deny",
+            "rm -rf": "deny",
             "mv *": "ask",
             "cp *": "ask",
             "grep *": "allow",
@@ -113,6 +114,7 @@ ${MODEL_ENTRIES}
                     "git commit *": "deny",
                     "git push *": "deny",
                     "rm *": "deny",
+                    "rm -rf": "deny",
                     "grep *": "allow",
                     "cat *": "allow",
                     "ls *": "allow"
