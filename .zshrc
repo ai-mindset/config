@@ -371,6 +371,14 @@ tunnel_up()   { ssh -fN server && echo "tunnel up"; }
 tunnel_down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
 opencode_ollama() { tunnel_up && opencode }
 server_sleep() { systemctl suspend && echo "server suspended"; }
+ollama_self_update() { # Update the Ollama binary itself (Linux & macOS)
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "❌ curl is not installed – cannot download the updater"
+    return 1
+  fi
+  echo "⬇️  Downloading and installing the latest Ollama release…"
+  curl -fsSL https://ollama.com/install.sh | sh
+}
 ollama_clean() { sudo find /usr/share/ollama/.ollama/models/blobs -name "*-partial" -delete -print }
 # Ollama model list with descriptions
 ollama_list() {
