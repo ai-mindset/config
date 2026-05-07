@@ -1,39 +1,32 @@
 # Global Rules
 
-## CRITICAL SAFETY RULES — NEVER VIOLATE
-
-0. ALWAYS search the API documentation of whichever technology we're using in our project e.g. https://hexdocs.pm/elixir/1.19.5/Kernel.html, https://pkg.go.dev/std etc.
-1. NEVER commit to git without explicit user approval
-2. NEVER push to any remote
-3. NEVER delete files without explicit user approval
-4. NEVER modify more than ONE file at a time without asking
-5. NEVER run destructive shell commands (rm, mv, chmod, chown)
-6. ALWAYS show a diff/plan BEFORE making any edit
-7. ALWAYS ask before creating new files
-8. ALWAYS ask for explicit approval before making changes or taking actions
-9. When editing, make the MINIMUM change necessary
-10. If unsure about anything, ASK — do not guess
-11. Commit messages must be succinct, informative and NEVER contain 'Co-Authored-By' or similar references to specific agents   
-12. NEVER add comments to code that are not strictly necessary for understanding the code, and NEVER add comments that reference specific agents or users
+## Critical Safety Rules — Never Violate
+1. **Ask before committing** any change to git.
+2. **Never push** to a remote repository.
+3. **Ask before deleting** any file.
+4. **Edit only one file at a time** unless the user explicitly authorises more.
+5. **Run only non‑destructive shell commands** (rm, mv, chmod, chown) unless the user grants permission.
+6. **Show a diff/plan before making any edit.**
+7. **Ask before creating new files.**
+8. **Require explicit user approval for every change or action.**
+9. **Make the minimal change necessary** to achieve the goal.
+10. **If you are unsure, ask** rather than guess.
+11. **Write concise, factual commit messages** (no “Co‑Authored‑By” lines).
 
 ## Workflow
-
-- When asked to fix a bug: first READ the relevant code, then EXPLAIN the issue, then PROPOSE a fix, then WAIT for approval
-- When asked to refactor: first EXPLAIN the plan, then do ONE file at a time, waiting for approval between files
-- When asked to add a feature: first OUTLINE the approach, then implement incrementally
+- **Bug fix:** READ → EXPLAIN → PROPOSE → WAIT for approval.
+- **Refactor:** EXPLAIN → SHOW a `git diff` of the intended change → EDIT one file at a time → WAIT for approval after each file.
+- **Feature addition:** OUTLINE the approach → IMPLEMENT incrementally.
 
 ## Git
-
-- NEVER run git commit, git push, git checkout, git reset, or git rebase
-- You may ONLY run: git status, git diff, git log
+- **Allowed:** `git status`, `git diff`, `git log`, `git pull`.
+- **Disallowed:** `git commit`, `git push`, `git checkout`, `git reset`, `git rebase`.
 
 ## Response Style
-
-- Be concise
-- Show code changes as diffs when possible
-- Explain what you're about to do BEFORE doing it
-- Be precise 
-- Be correct
-- Justify your answers
-- Do not waste tokens, generate succinct and highly informative responses that distil the essence of what you want to say
-- DO NOT hallucinate
+- **Be concise** and **use only the markup required** (no emojis, no extra headings).
+- **Ground answers in reputable sources**; cite them when possible.
+- **Distil the essence** of what you want to convey.
+- **Show code changes as diffs** whenever you modify code.
+- **Explain what you’re about to do before doing it.**
+- **Be precise, correct, and justified** in every statement.
+- **Do not hallucinate** – verify facts before stating them.
