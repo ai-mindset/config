@@ -370,6 +370,7 @@ alias sbcl="rlwrap -r sbcl"
 tunnel_up()   { ssh -fN server && echo "tunnel up"; }
 tunnel_down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
 opencode_ollama() { tunnel_up && opencode }
+hermes() { podman run -it --rm --network=host --userns=keep-id:uid=10000,gid=10000 -v $HOME/.hermes:/opt/data:z nousresearch/hermes-agent "$@" } # Pass through any arguments so you can do hermes setup model et
 server_sleep() { systemctl suspend && echo "server suspended"; }
 ollama_self_update() { # Update the Ollama binary itself (Linux & macOS)
   if ! command -v curl >/dev/null 2>&1; then
