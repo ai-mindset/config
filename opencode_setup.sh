@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 set -euo pipefail
+set -x
 
 echo "=== OpenCode + Ollama Server Setup ==="
 read "SERVER_IP?Server IP: "
@@ -21,8 +22,8 @@ Host server
     ServerAliveCountMax 3
 EOF
 
-OPENCODE_CONFIG_DIR=~/.opencode
-AGENTS_CONFIG_DIR=~/.config/agents
+OPENCODE_CONFIG_DIR=$HOME/.opencode
+AGENTS_CONFIG_DIR=$HOME/.config/agents
 mkdir -p "$OPENCODE_CONFIG_DIR"
 mkdir -p "$AGENTS_CONFIG_DIR"
 
@@ -34,19 +35,70 @@ fi
 if [[ -f $AGENTS_CONFIG_DIR/AGENTS.md ]]; then
     echo "AGENTS.md already exists at $AGENTS_CONFIG_DIR/AGENTS.md, skipping"
     exit 0
-fi 
+fi
 
-MODELS=$(curl -s http://127.0.0.1:11434/v1/models || ssh server "curl -s http://127.0.0.1:11434/v1/models")
-MODEL_ENTRIES=$(echo "$MODELS" | python3 -c "
-import sys,json
-for m in json.load(sys.stdin)['data']:
-    mid=m['id']
-    if 'embed' in mid.lower():
-        continue
-    parts=mid.replace('-',' ').split(':')
-    name=parts[0].title()+' '+parts[1] if ':' in mid else parts[0].title()
-    print(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}},')
-" | sed '$ s/,$//')
+MODELS=$(curl -s http://127.0.0.1:11434/v1/models)
+if [[ -z "$MODELS" ]]; then
+    MODELS=$(ssh server "curl -s http://127.0.0.1:11434/v1/models")
+fi
+if [[ -z "$MODELS" ]]; then
+    echo "ERROR: Could not reach Ollama locally or via SSH tunnel." >&2
+    echo "       Is 'ssh -fN server' running?" >&2
+    exit 1
+fi
+
+SELECTION=$(echo "$MODELS" | python3 -c "
+import sys, json
+
+try:
+    data = json.load(sys.stdin)['data']
+except Exception as e:
+    print(f'ERROR: Failed to parse Ollama model list: {e}', file=sys.stderr)
+    sys.exit(1)
+
+ids = [m['id'] for m in data if 'embed' not in m['id'].lower()]
+
+if not ids:
+    print('ERROR: No non-embedding models found in Ollama. Have you pulled any models?', file=sys.stderr)
+    sys.exit(1)
+
+BUILD_CANDIDATES = ['qwen3.6:35b', 'qwen3.6:27b', 'devstral-small-2:24b', 'gemma4:31b', 'granite4.1:30b']
+PLAN_CANDIDATES  = ['gpt-oss:120b', 'qwen3.5:122b-a10b', 'nemotron-3-super:latest', 'nemotron-cascade-2:30b']
+
+def pick(role, candidates, ids):
+    for c in candidates:
+        if c in ids:
+            return c
+    print(f'ERROR: No suitable {role} model found in Ollama.', file=sys.stderr)
+    print(f'  Expected one of: {chr(44).join(candidates)}', file=sys.stderr)
+    print(f'  Available models: {chr(44).join(ids)}', file=sys.stderr)
+    return None
+
+build_model = pick('build', BUILD_CANDIDATES, ids)
+plan_model  = pick('plan',  PLAN_CANDIDATES,  ids)
+
+if not build_model or not plan_model:
+    sys.exit(1)
+
+entries = []
+for mid in ids:
+    parts = mid.replace('-', ' ').split(':')
+    name = parts[0].title() + ' ' + parts[1] if ':' in mid else parts[0].title()
+    entries.append(f'                \"{mid}\": {{\"name\": \"{name}\", \"tools\": true, \"options\": {{\"extraBody\": {{\"think\": true}}}}}}')
+model_entries = ',\n'.join(entries)
+
+print(f'{model_entries}|||{build_model}|||{plan_model}')
+")
+
+PYTHON_EXIT=$?
+if [[ $PYTHON_EXIT -ne 0 ]]; then
+    echo "ERROR: Model selection failed." >&2
+    exit 1
+fi
+
+MODEL_ENTRIES=$(echo "$SELECTION" | awk -F'[|][|][|]' 'BEGIN{RS=""} {print $1}')
+BUILD_MODEL=$(echo "$SELECTION"   | awk -F'[|][|][|]' 'BEGIN{RS=""} {print $2}')
+PLAN_MODEL=$(echo "$SELECTION"    | awk -F'[|][|][|]' 'BEGIN{RS=""} {print $3}')
 
 cat > "$OPENCODE_CONFIG_DIR/opencode.json" <<EOF
 {
@@ -103,6 +155,7 @@ ${MODEL_ENTRIES}
     },
     "agent": {
         "build": {
+            "model": "${BUILD_MODEL}",
             "mode": "primary",
             "description": "Development agent with safety guardrails",
             "temperature": 0,
@@ -122,6 +175,7 @@ ${MODEL_ENTRIES}
             }
         },
         "plan": {
+            "model": "${PLAN_MODEL}",
             "mode": "primary",
             "description": "Read-only analysis and planning",
             "temperature": 0,
@@ -144,8 +198,10 @@ ${MODEL_ENTRIES}
 }
 EOF
 
-# NOTE: The following heredoc creates the AGENTS.md file.
-# It includes a newline before the terminating token to avoid a missing‑line issue.
+echo "✓ OpenCode config written to $OPENCODE_CONFIG_DIR/opencode.json"
+echo "  build agent → $BUILD_MODEL"
+echo "  plan  agent → $PLAN_MODEL"
+
 cat > "$AGENTS_CONFIG_DIR/AGENTS.md" <<'AGENTS'
 # Global Rules
 
@@ -160,7 +216,7 @@ cat > "$AGENTS_CONFIG_DIR/AGENTS.md" <<'AGENTS'
 8. **Require explicit user approval for every change or action.**
 9. **Make the minimal change necessary** to achieve the goal.
 10. **If you are unsure, ask** rather than guess.
-11. **Write concise, factual commit messages** (no “Co‑Authored‑By” lines).
+11. **Write concise, factual commit messages** (no "Co‑Authored‑By" lines).
 
 ## Workflow
 - **Bug fix:** READ → EXPLAIN → PROPOSE → WAIT for approval.
@@ -176,10 +232,9 @@ cat > "$AGENTS_CONFIG_DIR/AGENTS.md" <<'AGENTS'
 - **Ground answers in reputable sources**; cite them when possible.
 - **Distil the essence** of what you want to convey.
 - **Show code changes as diffs** whenever you modify code.
-- **Explain what you’re about to do before doing it.**
+- **Explain what you're about to do before doing it.**
 - **Be precise, correct, and justified** in every statement.
 - **Do not hallucinate** – verify facts before stating them.
-
 
 AGENTS
 
