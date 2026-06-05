@@ -135,7 +135,7 @@ if not ids:
     sys.exit(1)
 
 BUILD_CANDIDATES = ['qwen3.6:35b', 'qwen3.6:27b', 'devstral-small-2:24b', 'gemma4:31b', 'granite4.1:30b']
-PLAN_CANDIDATES  = ['gpt-oss:120b', 'qwen3.5:122b-a10b', 'nemotron-3-super:latest', 'nemotron-cascade-2:30b']
+PLAN_CANDIDATES  = ['nemotron-3-super:latest', 'nemotron-cascade-2:30b']
 
 def sanitise(mid): return re.sub(r'[^a-zA-Z0-9]', '_', mid)
 def pretty_name(mid): return re.sub(r'[_:\.\-]+', ' ', mid).title()
