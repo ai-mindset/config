@@ -475,6 +475,71 @@ export NVM_DIR="$HOME/.nvm"
 export FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT=1
 # https://github.com/Azure/azure-cli?tab=readme-ov-file#telemetry-configuration
 az config set core.collect_telemetry=no --only-show-errors
+
+# --- Azure Function App helpers ---
+
+# Show Function App details
+azfn-show() {
+  local app=$1 rg=$2
+  az functionapp show --name "$app" --resource-group "$rg"
+}
+
+# List Function Apps in a resource group
+azfn-list() {
+  local rg=$1
+  az functionapp list --resource-group "$rg" --query "[].name" -o tsv
+}
+
+# List functions in an app
+azfn-funcs() {
+  local app=$1 rg=$2
+  az functionapp function list --name "$app" --resource-group "$rg" --query "[].name" -o tsv
+}
+
+# Get function key (default)
+azfn-key() {
+  local app=$1 rg=$2 func=$3
+  az functionapp function keys list --name "$app" --resource-group "$rg" --function-name "$func" --query default -o tsv
+}
+
+# Set app settings from env var pairs
+azfn-settings() {
+  local app=$1 rg=$2; shift 2
+  az functionapp config appsettings set --name "$app" --resource-group "$rg" --settings "$@"
+}
+
+# Restart app
+azfn-restart() {
+  local app=$1 rg=$2
+  az webapp restart --name "$app" --resource-group "$rg"
+}
+
+# Enable SCM basic auth
+azfn-enable-scm() {
+  local app=$1 rg=$2
+  local id=$(az functionapp show --name "$app" --resource-group "$rg" --query id -o tsv)
+  az resource update --ids "${id}/basicPublishingCredentialsPolicies/scm" --set properties.allow=true
+  az resource update --ids "${id}/basicPublishingCredentialsPolicies/ftp" --set properties.allow=true
+}
+
+# Deploy zip to Function App (Flex Consumption)
+azfn-deploy() {
+  local app=$1 rg=$2 zip=$3
+  az functionapp deploy --resource-group "$rg" --name "$app" --src-path "$zip" --type zip
+}
+
+# Show my role assignments
+az-roles() {
+  az role assignment list --all --query "[].{Role:roleDefinitionName, Principal:principalName, Scope:scope}" -o table
+}
+
+# Show recent activity log for a resource group
+az-logs() {
+  local rg=$1
+  az monitor activity-log list --resource-group "$rg" --query "[].{Operation:operationName.value, Status:status.value, Time:eventTimestamp}" -o table
+}
+
+# --- Azure Function App helpers ---
 ## Azure products
 
 ## Powerlevel10k
