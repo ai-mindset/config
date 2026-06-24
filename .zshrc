@@ -530,7 +530,73 @@ azfn-deploy() {
 
 # Show my role assignments
 az-roles() {
-  az role assignment list --all --query "[].{Role:roleDefinitionName, Principal:principalName, Scope:scope}" -o table
+  local role_filter="" email_filter=""
+  local restricted=false
+  local -a restricted_roles=(
+    "Reader"
+    "Monitoring Reader"
+    "Security Reader"
+    "Cost Management Reader"
+    "Storage Blob Data Reader"
+    "Azure Kubernetes Service Cluster User Role"
+  )
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -r|--role)
+        role_filter="$2"
+        shift 2
+        ;;
+      -e|--email)
+        email_filter="$2"
+        shift 2
+        ;;
+      --restricted)
+        restricted=true
+        shift
+        ;;
+      -h|--help)
+        cat <<'HELP'
+Usage: az-roles [-r ROLE] [-e EMAIL] [--restricted]
+
+Options:
+  -r, --role ROLE       Filter by role definition name (e.g. Owner, Contributor)
+  -e, --email EMAIL     Filter by principal name/email substring
+      --restricted      Show only common read-only / limited-access roles
+  -h, --help            Show this help
+HELP
+        return 0
+        ;;
+      *)
+        echo "Unknown option: $1" >&2
+        return 1
+        ;;
+    esac
+  done
+
+  if [[ -n "$role_filter" && "$restricted" == true ]]; then
+    echo "Error: --restricted cannot be combined with --role" >&2
+    return 1
+  fi
+
+  local -a conditions=()
+  [[ -n "$role_filter" ]] && conditions+=("roleDefinitionName=='${role_filter}'")
+  [[ -n "$email_filter" ]] && conditions+=("contains(principalName,'${email_filter}')")
+
+  if [[ "$restricted" == true ]]; then
+    local role_cond="" sep=""
+    for r in "${restricted_roles[@]}"; do
+      role_cond+="${sep}roleDefinitionName=='${r}'"
+      sep=" || "
+    done
+    conditions+=("(${role_cond})")
+  fi
+
+  local query="["
+  (( ${#conditions} > 0 )) && query+="?${(j: && :)conditions}"
+  query+="].{Role:roleDefinitionName, Principal:principalName, Scope:scope}"
+
+  az role assignment list --all --query "$query" -o table
 }
 
 # Show recent activity log for a resource group
