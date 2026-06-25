@@ -347,6 +347,11 @@ add-zsh-hook chpwd python_venv
 python_venv
 ## Python
 
+## Deno 
+export PATH="$HOME/.deno/bin:$PATH"
+export DENO_NO_TELEMETRY=1
+## Deno
+
 ## Zig - https://ziglang.org/download/
 export ZIG_HOME="$HOME/.zig"
 export PATH="$ZIG_HOME:$PATH"
@@ -625,4 +630,3 @@ fi
 # Load git completions for aliases
 zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
 ## Completion
-
