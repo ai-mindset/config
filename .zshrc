@@ -268,8 +268,7 @@ done
 ## yt-dlp download multiple video subs
 
 ## PiperTTS
-PATH=$PATH:$HOME/AppImage/piper
-export PATH
+export PATH=$HOME/AppImages/piper$PATH
 alias piper="piper-tts --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
 ## PiperTTS
 
