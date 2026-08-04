@@ -1,0 +1,84 @@
+#compdef task
+
+# Zsh completion for task.sh script
+# Save this file as _task in a directory in your fpath
+# For example: ~/.zsh/completions/_task
+
+_task() {
+  local curcontext="$curcontext" state line ret=1
+  local -a _task_cmds
+
+  _task_cmds=(
+    'add:Add a new task with optional due date'
+    'a:Add a new task (shorthand)'
+    'today:List tasks due today'
+    't:List tasks due today (shorthand)'
+    'week:List tasks due in the next 7 days'
+    'w:List tasks due in the next 7 days (shorthand)'
+    'pending:List all pending tasks'
+    'p:List all pending tasks (shorthand)'
+    'done:Mark task as complete or list completed tasks'
+    'd:Mark task as complete or list completed tasks (shorthand)'
+    'cancel:Mark task as cancelled or list cancelled tasks'
+    'c:Mark task as cancelled or list cancelled tasks (shorthand)'
+    'all:List all tasks'
+    'list:List all tasks (alias)'
+    'l:List all tasks (shorthand)'
+  )
+
+  _arguments -C \
+    '1: :->cmds' \
+    '*:: :->args' && ret=0
+
+  case $state in
+    cmds)
+      _describe -t commands 'task commands' _task_cmds && ret=0
+      ;;
+    args)
+      case $line[1] in
+        add|a)
+          # Check if we're at the date argument position
+          if [[ $CURRENT -eq 2 ]]; then
+            # If date format is entered, complete the next position
+            if [[ ${words[2]} =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+              _message "task description" && ret=0
+            else
+              # Otherwise, suggest a date format or just let user enter task description
+              local -a date_formats
+              local today=$(date +%Y-%m-%d)
+              local tomorrow=$(date -v+1d +%Y-%m-%d 2>/dev/null || date -d "+1 day" +%Y-%m-%d)
+              local next_week=$(date -v+7d +%Y-%m-%d 2>/dev/null || date -d "+7 days" +%Y-%m-%d)
+
+              date_formats=(
+                "$today:Today"
+                "$tomorrow:Tomorrow"
+                "$next_week:Next week"
+              )
+
+              _describe -t dates 'optional due date (YYYY-MM-DD)' date_formats && ret=0
+              _message "or enter task description" && ret=0
+            fi
+          else
+            # For later positions, just expect task description
+            _message "task description" && ret=0
+          fi
+          ;;
+        done|d|cancel|c)
+          # If we're completing a task number
+          if [[ $CURRENT -eq 2 ]]; then
+            # We'd need to run task pending to get the numbers, but that creates temp files
+            # Instead, just indicate that a number is expected
+            _message "task number (run 'task pending' first)" && ret=0
+          fi
+          ;;
+        *)
+          # No specific completions for other commands
+          ;;
+      esac
+      ;;
+  esac
+
+  return ret
+}
+
+_task "$@"
