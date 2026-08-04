@@ -1,0 +1,38 @@
+# Security defaults
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+approvals_reviewer = "user"
+allow_login_shell = false
+
+personality = "pragmatic"
+web_search = "cached"
+
+[analytics]  
+enabled = false  
+  
+[feedback]  
+enabled = false  
+  
+[otel]  
+exporter = "none"
+log_user_prompt = false
+
+# Do not pass exported secret variables to subprocesses.
+[shell_environment_policy]
+inherit = "core"
+ignore_default_excludes = false
+
+[permissions.workspace-no-env]
+description = "Workspace editing without access to environment files."
+extends = ":workspace"
+
+[permissions.workspace-no-env.filesystem]
+glob_scan_max_depth = 8
+
+[permissions.workspace-no-env.filesystem.":workspace_roots"]
+"**/.env" = "deny"
+"**/.env.*" = "deny"
+"**/*.env" = "deny"
+
+[permissions.workspace-no-env.network]
+enabled = false
