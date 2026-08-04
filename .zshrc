@@ -464,6 +464,13 @@ export DISABLE_ERROR_REPORTING=1
 export DISABLE_TELEMETRY=1
 ## Claude Code
 
+## Codex
+ # If Codex is not installed
+ if ! command -v codex &>/dev/null; then
+     echo 'Codex is not installed. Please install it by running `curl -fsSL https://chatgpt.com/codex/install.sh | sh`'
+ fi
+## Codex
+
 ## Node Version Manager
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
