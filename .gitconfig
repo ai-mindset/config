@@ -82,6 +82,7 @@
     # Descriptive, read-only inspection commands
     overview = status --short --branch
     history = log --graph --oneline --decorate --all --date-order
+    history-stats = log --graph --oneline --decorate --all --date-order --stat
     branches = branch --all --verbose --verbose
     staged = diff --staged
     details = show --stat --summary
