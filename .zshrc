@@ -121,8 +121,11 @@ source $ZSH/oh-my-zsh.sh
 # Load library path
 LD_LIBRARY_PATH=/usr/local/lib
 
-# Appimages
+# AppImages
 export PATH="$HOME/AppImages:$PATH"
+
+# DuckDB
+export PATH="$HOME/.duckdb/cli/latest":$PATH
 
 # Neovim
 alias nvim="$HOME/AppImages/nvim-linux-x86_64/bin/nvim"
