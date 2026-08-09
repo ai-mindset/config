@@ -350,14 +350,6 @@ python_venv
 ## Deno 
 export PATH="$HOME/.deno/bin:$PATH"
 export DENO_NO_TELEMETRY=1
-deno() {
-    if [[ "$1" == "fmt" ]]; then
-      shift
-      command deno fmt --prose-wrap=preserve "$@"
-    else
-      command deno "$@"
-    fi
-  }
 ## Deno
 
 ## asdf version manager
