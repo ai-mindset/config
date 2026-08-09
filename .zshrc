@@ -350,12 +350,15 @@ python_venv
 ## Deno 
 export PATH="$HOME/.deno/bin:$PATH"
 export DENO_NO_TELEMETRY=1
+deno() {
+    if [[ "$1" == "fmt" ]]; then
+      shift
+      command deno fmt --prose-wrap=preserve "$@"
+    else
+      command deno "$@"
+    fi
+  }
 ## Deno
-
-## Zig - https://ziglang.org/download/
-export ZIG_HOME="$HOME/.zig"
-export PATH="$ZIG_HOME:$PATH"
-## Zig
 
 ## asdf version manager
 export ASDF_DIR="$HOME/.asdf"
