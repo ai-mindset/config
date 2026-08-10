@@ -89,3 +89,4 @@
     file-history = log --follow --patch --
     compare = log --left-right --graph --cherry-pick --oneline
     merged-branches = branch --merged
+    prune-branches = "!f() { git fetch --all --prune && git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads/ | while read -r branch state; do if [ \"$state\" = '[gone]' ]; then git branch -D -- \"$branch\"; fi; done; }; f"
