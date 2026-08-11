@@ -78,15 +78,27 @@
 [rerere]
    enabled = true # Remembers conflict resolutions for repeated merges
 
-[alias]
-    # Descriptive, read-only inspection commands
-    overview = status --short --branch
-    history = log --graph --oneline --decorate --all --date-order
-    history-stats = log --graph --oneline --decorate --all --date-order --stat
-    branches = branch --all --verbose --verbose
-    staged = diff --staged
-    details = show --stat --summary
-    file-history = log --follow --patch --
-    compare = log --left-right --graph --cherry-pick --oneline
-    merged-branches = branch --merged
-    prune-branches = "!f() { git fetch --all --prune && git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads/ | while read -r branch state; do if [ \"$state\" = '[gone]' ]; then git branch -D -- \"$branch\"; fi; done; }; f"
+ [alias]
+      # Read-only inspection
+      overview = status --short --branch
+
+      # Current branch by default; accepts another branch as an argument
+      history = log --graph --oneline --decorate --date-order
+      history-stats = log --graph --oneline --decorate --date-order --stat
+
+      # History across every local and remote ref
+      history-all = log --graph --oneline --decorate --date-order --all
+      history-all-stats = log --graph --oneline --decorate --date-order --all --stat
+
+      # Follow only the branch's mainline through merge commits
+      history-mainline = log --graph --oneline --decorate --date-order --first-parent
+
+      branches = branch --all --verbose --verbose
+      staged = diff --staged
+      details = show --stat --summary
+      file-history = log --follow --patch --
+      compare = log --left-right --graph --cherry-pick --oneline
+      merged-branches = branch --merged
+
+      # Maintenance: fetches and force-deletes local branches with gone upstreams
+      prune-branches = "!f() { git fetch --all --prune && git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads/ | while read -r branch state; do if [ \"$state\" = '[gone]' ]; then git branch -d -- \"$branch\"; fi; done; }; f"
