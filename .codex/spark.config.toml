@@ -1,0 +1,5 @@
+model = "gpt-5.3-codex-spark"
+
+# Keep Spark focused on short, single-agent iterations.
+[agents]
+enabled = false
