@@ -1,12 +1,5 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# export PATH="$HOME/bin:/usr/local/bin:$PATH"
 
 # Zsh speedup
 DISABLE_AUTO_UPDATE="true"
@@ -21,11 +14,6 @@ export ZSH="$HOME/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="simple" #"minimal"
-# ZSH_THEME="powerlevel9k/powerlevel9k"
-# POWERLEVEL9K_DISABLE_RPROMPT=true
-# POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-# POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="> "
-# POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -114,8 +102,8 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# alias zshconfig="mate $HOME/.zshrc"
+# alias ohmyzsh="mate $HOME/.oh-my-zsh"
 
 
 # Load library path
@@ -125,7 +113,7 @@ LD_LIBRARY_PATH=/usr/local/lib
 export PATH="$HOME/AppImages:$PATH"
 
 # DuckDB
-export PATH="$HOME/.duckdb/cli/latest":$PATH
+export PATH="$HOME/.duckdb/cli/latest:$PATH"
 
 # Neovim
 alias nvim="$HOME/AppImages/nvim-linux-x86_64/bin/nvim"
@@ -134,8 +122,8 @@ alias nvim="$HOME/AppImages/nvim-linux-x86_64/bin/nvim"
 export EDITOR="nvim"
 
 # Tmux
-[[ -d ~/.tmux ]] || mkdir ~/.tmux
-alias tmux='tmux -S ~/.tmux/dev'
+[[ -d "$HOME/.tmux" ]] || mkdir "$HOME/.tmux"
+alias tmux='tmux -S "$HOME/.tmux/dev"'
 
 ## Show git status on ls
 function ls {
@@ -144,7 +132,7 @@ function ls {
   # Run the real ls with whatever arguments were passed
   command ls "$@"
 }
-## Show git status on ls
+## /Show git status on ls
 
 ## log tasks - https://bsky.app/profile/chrisalbon.com/post/3ld24aoq4ik2p
 # Define path to your log file
@@ -159,13 +147,28 @@ function log_task() {
     # Confirm that task was added
     echo "Logged: $timestamp $*"
 }
-## log tasks
+## /log tasks
 
 ## task 
 task p
-## task
+## /task
 
-rm -f ~/.zsh_history
+## poke
+poke-sync() {
+  local token
+  if ! token="$(secret-tool lookup application poke host github.com)"; then
+    print -u2 "Could not read the Poke GitHub PAT from Secret Service."
+    return 1
+  fi
+  if [[ -z "$token" ]]; then
+    print -u2 "No Poke GitHub PAT was found in Secret Service."
+    return 1
+  fi
+  GITHUB_TOKEN="$token" command poke sync "$@"
+}
+## /poke
+
+rm -f "$HOME/.zsh_history"
 # $ crontab -e
 # @daily name_of_script.sh
 
@@ -189,7 +192,7 @@ function list_big_packages() {
     return 1
   fi
 }
-## List big packages
+## /List big packages
 
 ## Find and replace
 function replace() {
@@ -208,15 +211,9 @@ function replace() {
   # find . -type f \
   #   -exec sed -i '' "s/${search}/${replace}/g" {} +
 }
-## Find and replace
+## /Find and replace
 
 ## General aliases
-alias yt-dlp_mp3="yt-dlp -x --audio-format mp3"
-alias yt-dlp_best_format="yt-dlp -f \" bv+ba/b \" "
-# --list-subs: en        English vtt, srt, ttml, srv3, srv2, srv1, json3
-alias yt-dlp_subs="yt-dlp --write-subs --write-auto-sub --skip-download --sub-format \"srt\" "
-# https://github.com/yt-dlp/yt-dlp/issues/7496#issuecomment-1763510751
-alias yt-dlp_clean_subs="yt-dlp --skip-download --write-subs --write-auto-subs --sub-lang en --sub-format ttml --convert-subs srt --exec before_dl:\"sed -e '/^[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9] --> [0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]$/d' -e '/^[[:digit:]]\{1,3\}$/d' -e 's/<[^>]*>//g' -e '/^[[:space:]]*$/d' -i '' %(requested_subtitles.:.filepath)#q\""
 alias font_recache="sudo fc-cache -f -v"
 alias pip_rm_all="pip freeze | xargs pip uninstall -y"
 alias url_IP="dig +trace"
@@ -257,21 +254,94 @@ alias podman_prune="podman system prune -af --volumes"
 alias podman_build_run="podman_prune && podman build -t my-container . && podman run -it my-container"
 alias grep="grep --color=auto"
 alias dropcache='sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"' # Free up memory by dropping caches. Use with caution, as it can impact performance temporarily.
-## General aliases
+## /General aliases
 
-## yt-dlp download multiple video subs
-function yt-dlp_multi_subs() {
-find . -type f -iname '*.mp4' | while read file; do
-  youtube_id=$(basename "$file" .mp4 | grep -o '\[.*\]' | tr -d '[]')
-  yt-dlp_subs "https://youtu.be/$youtube_id"
-done
+## yt-dlp
+_ytdlp() {
+  local deno_bin="${commands[deno]:-$HOME/.deno/bin/deno}"
+
+  if [[ ! -x "$deno_bin" ]]; then
+    print -u2 "yt-dlp: Deno was not found"
+    return 1
+  fi
+
+  command yt-dlp --js-runtimes "deno:$deno_bin" "$@"
 }
-## yt-dlp download multiple video subs
+
+yt-dlp_mp3() {
+  _ytdlp -x --audio-format mp3 "$@"
+}
+
+# This is approximately yt-dlp's default format selection.
+yt-dlp_best_format() {
+  _ytdlp -f 'bv*+ba/b' "$@"
+}
+
+yt-dlp_subs() {
+  _ytdlp \
+    --skip-download \
+    --write-subs \
+    --write-auto-subs \
+    --sub-langs 'en.*' \
+    --sub-format 'srt/best' \
+    --convert-subs srt \
+    "$@"
+}
+
+yt-dlp_multi_subs() {
+  local file stem youtube_id
+
+  while IFS= read -r -d '' file; do
+    stem="${file:t:r}"
+    youtube_id="$(
+      print -r -- "$stem" |
+        sed -nE 's/.*\[([A-Za-z0-9_-]{11})\]$/\1/p'
+    )"
+
+    if [[ -n "$youtube_id" ]]; then
+      yt-dlp_subs "https://youtu.be/$youtube_id"
+    else
+      print -u2 "yt-dlp_multi_subs: no trailing YouTube ID: $file"
+    fi
+  done < <(find . -type f -iname '*.mp4' -print0)
+}
+
+yt-dlp_mp4() {
+  if (( $# == 0 )); then
+    print -u2 "Usage: yt-dlp_mp4 [yt-dlp options] <URL>"
+    return 2
+  fi
+
+  _ytdlp -t mp4 "$@"
+}
+
+srt-to-text() {
+  if (( $# == 0 )); then
+    print -u2 "Usage: srt-to-text FILE.srt [...]"
+    return 2
+  fi
+
+  local input output
+
+  for input in "$@"; do
+    output="${input:r}.txt"
+
+    sed -E \
+      -e '/^[0-9]+$/d' \
+      -e '/^[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} --> /d' \
+      -e 's/<[^>]*>//g' \
+      -e '/^[[:space:]]*$/d' \
+      -- "$input" > "$output"
+
+    print -r -- "$output"
+  done
+}
+## /yt-dlp
 
 ## PiperTTS
-export PATH=$HOME/AppImages/piper:$PATH
+export PATH="$HOME/AppImages/piper:$PATH"
 alias piper="piper-tts --model /usr/share/piper-voices/en_GB-alba-medium.onnx"
-## PiperTTS
+## /PiperTTS
 
 ## Convert .epub to .md
 function epub2md() {
@@ -284,11 +354,11 @@ function _epub2md() {
   _arguments '1:epub file:_files -g "*.epub"' '2:output file:_files'
 }
 compdef _epub2md epub2md
-## Convert .epub to .md
+## /Convert .epub to .md
 
 ## Python
 # uv uvx
-export PATH=$HOME/.local/bin:$PATH
+export PATH="$HOME/.local/bin:$PATH"
 # Fix completions for uv run https://github.com/astral-sh/uv/issues/8432#issuecomment-2867318195
 function _uv_run_mod() {
     if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
@@ -307,7 +377,7 @@ function clear_pycache() {
 }
 
 # Source .venv to prevent installing packages globally
-source $HOME/.venv/bin/activate
+source "$HOME/.venv/bin/activate"
 # Maintain PATH after venv activation
 function activate-venv() {
   local _OLD_PATH="$PATH"
@@ -345,32 +415,32 @@ add-zsh-hook chpwd python_venv
 
 # Run once at shell startup to handle the initial directory
 python_venv
-## Python
+## /Python
 
 ## Deno 
 export PATH="$HOME/.deno/bin:$PATH"
 export DENO_NO_TELEMETRY=1
-## Deno
+## /Deno
 
 ## asdf version manager
 export ASDF_DIR="$HOME/.asdf"
 export PATH="$ASDF_DIR/bin:$ASDF_DIR/shims:$PATH"
-## asdf version manager
+## /asdf version manager
 
 ## Elixir 
 alias burrito='mix deps.get && MIX_ENV=prod mix release $1 --overwrite'
-## Elixir
+## /Elixir
 
 ## SBCL
 alias sbcl="rlwrap -r sbcl"
-## SBCL 
+## /SBCL
 
 ## OpenCode
 # --- server management ---
 tunnel_up()   { ssh -fN server && echo "tunnel up"; }
 tunnel_down() { pkill -f 'ssh -fN server' && echo "tunnel down" || echo "no tunnel"; }
 opencode_ollama() { tunnel_up && opencode }
-hermes() { podman run -it --rm --network=host --userns=keep-id:uid=10000,gid=10000 -v $HOME/.hermes:/opt/data:z nousresearch/hermes-agent "$@" } # Pass through any arguments so you can do hermes setup model et
+hermes() { podman run -it --rm --network=host --userns=keep-id:uid=10000,gid=10000 -v "$HOME/.hermes:/opt/data:z" nousresearch/hermes-agent "$@" } # Pass through any arguments so you can do hermes setup model et
 server_sleep() { systemctl suspend && echo "server suspended"; }
 ollama_self_update() { # Update the Ollama binary itself (Linux & macOS)
   if ! command -v curl >/dev/null 2>&1; then
@@ -421,29 +491,29 @@ ollama_list() {
         printf "%-40s %s\n" "$model" "$desc"
     done < "$cache_file"
 }
-# --- server management ---
+# --- /server management ---
 
-export PATH=$HOME/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 # If opencode is not installed
 if ! command -v opencode &>/dev/null; then
     echo 'OpenCode is not installed. Please install it by running `curl -fsSL https://opencode.ai/install | bash`'
 fi
 
 clear_opencode_cache() {
-    rm -rf ~/.cache/opencode/*
+    rm -rf "$HOME/.cache/opencode/"*
     echo "OpenCode cache cleared."
 }
 clear_opencode_history() {
-    rm -rf ~/.local/share/opencode/{storage,tool-output,log,snapshot}/*
-    rm -rf ~/.local/share/opencode/opencode.db*
-    rm -rf ~/.local/state/opencode/*
+    rm -rf "$HOME/.local/share/opencode/"{storage,tool-output,log,snapshot}/*
+    rm -rf "$HOME/.local/share/opencode/opencode.db"*
+    rm -rf "$HOME/.local/state/opencode/"*
     echo "OpenCode history cleared."
 }
 clear_opencode() {
     clear_opencode_cache
     clear_opencode_history
 }
-## OpenCode 
+## /OpenCode
 
 ## Claude Code
 # # If Claude Code is not installed
@@ -460,20 +530,20 @@ export DISABLE_AUTOUPDATER=1
 export DISABLE_BUG_COMMAND=1 
 export DISABLE_ERROR_REPORTING=1  
 export DISABLE_TELEMETRY=1
-## Claude Code
+## /Claude Code
 
 ## Codex
  # If Codex is not installed
  if ! command -v codex &>/dev/null; then
      echo 'Codex is not installed. Please install it by running `curl -fsSL https://chatgpt.com/codex/install.sh | sh`'
  fi
-## Codex
+## /Codex
 
 ## Node Version Manager
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-## Node Version Manager
+## /Node Version Manager
 
 ## Azure products
 # https://github.com/Azure/azure-functions-core-tools?tab=readme-ov-file#telemetry
@@ -610,23 +680,18 @@ az-logs() {
   az monitor activity-log list --resource-group "$rg" --query "[].{Operation:operationName.value, Status:status.value, Time:eventTimestamp}" -o table
 }
 
-# --- Azure Function App helpers ---
-## Azure products
-
-## Powerlevel10k
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-## Powerlevel10k
+# --- /Azure Function App helpers ---
+## /Azure products
 
 ## Completion
-fpath=(~/.zsh/completion $fpath)
+fpath=("$HOME/.zsh/completion" $fpath)
 # Zsh speedup - Smarter completion initialization
 autoload -Uz compinit
-if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' "$HOME/.zcompdump" 2>/dev/null)" ]; then
     compinit
 else
     compinit -C
 fi
 # Complete external git-* subcommands
 zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
-## Completion
+## /Completion
