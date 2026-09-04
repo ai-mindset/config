@@ -134,7 +134,7 @@ if not ids:
     print('ERROR: No non-embedding models found.', file=sys.stderr)
     sys.exit(1)
 
-BUILD_CANDIDATES = ['qwen3.6:35b', 'qwen3.6:27b', 'gemma4:31b', 'nemotron-cascade-2:30b']
+BUILD_CANDIDATES = ['qwen3.6:27b', 'gemma4:31b', 'nemotron-cascade-2:30b']
 PLAN_CANDIDATES  = ['nemotron-3-super:latest', 'qwen3.5:122b', 'gpt-oss:120b', 'glm-4.7-flash:latest']
 
 def sanitise(mid): return re.sub(r'[^a-zA-Z0-9]', '_', mid)
