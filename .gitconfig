@@ -37,13 +37,8 @@
    defaultBranch = main
 
 [pull]
-    ff = only
-    # This forces explicit handling of divergent branches, which is ideal for professional open-source repositories because:
-    # - Prevents accidental merges - Contributors must consciously resolve conflicts
-    # - Maintains clean main branch - No automatic merge commits cluttering history
-    # - Enforces workflow discipline - Forces proper branch management and rebasing
-    # - Reduces integration errors - Failed pulls alert you to conflicts that need attention
-    # Professional organizations typically want contributors to rebase their feature branches before merging, and fast-forward only enforces this practice by failing when branches have diverged, requiring deliberate action.
+    # Replay local, unpushed commits on top of the updated upstream branch.
+    rebase = true
 
 [fetch]
     # Remove local remote-tracking refs after their branches are deleted upstream
