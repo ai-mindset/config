@@ -135,7 +135,7 @@ X11Forwarding no
 AllowAgentForwarding no
 AllowTcpForwarding local
 AllowStreamLocalForwarding no
-PermitOpen 127.0.0.1:11434
+PermitOpen 127.0.0.1:11434 127.0.0.1:8000
 GatewayPorts no
 PermitTunnel no
 PermitUserEnvironment no
@@ -237,4 +237,5 @@ echo "   Reserve the server address for this MAC in the router."
 echo "   Keep the admin client's $ADMIN_CLIENT_CIDR address reserved too."
 echo "   Verify the host key here: sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub"
 echo "   Connect from the admin client: ssh $ADMIN_USER@${SERVER_ADDRESS%/*}"
-echo "   Tunnel Ollama when needed:    ssh -N -T -o ExitOnForwardFailure=yes -L 127.0.0.1:11434:127.0.0.1:11434 $ADMIN_USER@${SERVER_ADDRESS%/*}"
+echo "   Tunnel Ollama and Strands:     ssh -N -T -o ExitOnForwardFailure=yes -L 127.0.0.1:11434:127.0.0.1:11434 -L 127.0.0.1:8000:127.0.0.1:8000 $ADMIN_USER@${SERVER_ADDRESS%/*}"
+
