@@ -135,7 +135,7 @@ X11Forwarding no
 AllowAgentForwarding no
 AllowTcpForwarding local
 AllowStreamLocalForwarding no
-PermitOpen 127.0.0.1:11434 127.0.0.1:8000
+PermitOpen 127.0.0.1:11434 127.0.0.1:8080 127.0.0.1:8000
 GatewayPorts no
 PermitTunnel no
 PermitUserEnvironment no
@@ -179,7 +179,7 @@ for expected in \
     "allowagentforwarding no" \
     "allowtcpforwarding local" \
     "allowstreamlocalforwarding no" \
-    "permitopen 127.0.0.1:11434" \
+    "permitopen 127.0.0.1:11434 127.0.0.1:8080 127.0.0.1:8000" \
     "gatewayports no" \
     "permittunnel no" \
     "permituserenvironment no"; do
@@ -219,6 +219,43 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now ollama
 sudo systemctl restart ollama
 
+echo "\n💾 Installing Strata"
+if [[ ! -d "$ADMIN_HOME/Strata" ]]; then
+    git clone https://github.com/Niko1221/Strata.git "$ADMIN_HOME/Strata"
+    cd "$ADMIN_HOME/Strata"
+    HSA_OVERRIDE_GFX_VERSION=11.5.1 ./setup.sh --yes --family qwen --model Q2_0 --no-start
+    cd "$ADMIN_HOME"
+fi
+
+echo "\n💾 Configuring Strata systemd service"
+sudo mkdir -p /etc/systemd/system/strata.service.d
+sudo tee /etc/systemd/system/strata.service.d/override.conf > /dev/null <<'EOF'
+[Service]
+Environment="HSA_OVERRIDE_GFX_VERSION=11.5.1"
+EOF
+
+sudo tee /etc/systemd/system/strata.service > /dev/null <<EOF
+[Unit]
+Description=Strata local LLM server
+After=network-online.target ollama.service
+Wants=ollama.service
+
+[Service]
+Type=simple
+User=$ADMIN_USER
+WorkingDirectory=$ADMIN_HOME/Strata
+ExecStart=$ADMIN_HOME/Strata/run-q2_0.sh
+Restart=on-failure
+Environment="HSA_OVERRIDE_GFX_VERSION=11.5.1"
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now strata
+sudo systemctl restart strata
+
 echo "\n💻 Installing OpenCode"
 curl -fsSL https://opencode.ai/install | bash
 export PATH="$HOME/.local/bin:$PATH"
@@ -237,5 +274,4 @@ echo "   Reserve the server address for this MAC in the router."
 echo "   Keep the admin client's $ADMIN_CLIENT_CIDR address reserved too."
 echo "   Verify the host key here: sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub"
 echo "   Connect from the admin client: ssh $ADMIN_USER@${SERVER_ADDRESS%/*}"
-echo "   Tunnel Ollama and Strands:     ssh -N -T -o ExitOnForwardFailure=yes -L 127.0.0.1:11434:127.0.0.1:11434 -L 127.0.0.1:8000:127.0.0.1:8000 $ADMIN_USER@${SERVER_ADDRESS%/*}"
-
+echo "   Tunnel servers when needed:   ssh -N -T -o ExitOnForwardFailure=yes -L 127.0.0.1:11434:127.0.0.1:11434 -L 127.0.0.1:8080:127.0.0.1:8080 -L 127.0.0.1:8000:127.0.0.1:8000 $ADMIN_USER@${SERVER_ADDRESS%/*}"
