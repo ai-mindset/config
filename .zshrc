@@ -116,7 +116,7 @@ export PATH="$HOME/AppImages:$PATH"
 export PATH="$HOME/.duckdb/cli/latest:$PATH"
 
 # Neovim
-alias nvim="$HOME/AppImages/nvim-linux-x86_64/bin/nvim"
+alias nvim="$HOME/AppImages/nvim-linux-x86_64.appimage"
 
 # System-wide editor
 export EDITOR="nvim"
