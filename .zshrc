@@ -258,14 +258,14 @@ alias dropcache='sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"' # Free up
 
 ## yt-dlp
 _ytdlp() {
-  local deno_bin="${commands[deno]:-$HOME/.deno/bin/deno}"
+  local bun_bin="${commands[bun]:-$HOME/.bun/bin/bun}"
 
-  if [[ ! -x "$deno_bin" ]]; then
+  if [[ ! -x "$bun_bin" ]]; then
     print -u2 "yt-dlp: Deno was not found"
     return 1
   fi
 
-  command yt-dlp --js-runtimes "deno:$deno_bin" "$@"
+  command yt-dlp --js-runtimes "bun:$bun_bin" "$@"
 }
 
 yt-dlp_mp3() {
@@ -416,11 +416,6 @@ add-zsh-hook chpwd python_venv
 # Run once at shell startup to handle the initial directory
 python_venv
 ## /Python
-
-## Deno 
-export PATH="$HOME/.deno/bin:$PATH"
-export DENO_NO_TELEMETRY=1
-## /Deno
 
 ## asdf version manager
 export ASDF_DIR="$HOME/.asdf"
