@@ -261,7 +261,7 @@ _ytdlp() {
   local bun_bin="${commands[bun]:-$HOME/.bun/bin/bun}"
 
   if [[ ! -x "$bun_bin" ]]; then
-    print -u2 "yt-dlp: Deno was not found"
+    print -u2 "yt-dlp: Bun was not found"
     return 1
   fi
 
@@ -416,6 +416,12 @@ add-zsh-hook chpwd python_venv
 # Run once at shell startup to handle the initial directory
 python_venv
 ## /Python
+
+## Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+export DO_NOT_TRACK=1
+## /Bun
 
 ## asdf version manager
 export ASDF_DIR="$HOME/.asdf"
