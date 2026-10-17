@@ -28,7 +28,7 @@ Generate Unix commands using [ollama](https://ollama.com/) with [granite3.1-dens
 
 ## `.zshrc`
 
-[Zsh](https://www.zsh.org/) configuration. Requires [Oh My Zsh](https://ohmyz.sh/) and (optionally) [Glow](https://github.com/charmbracelet/glow). It contains configurations for the [asdf](https://github.com/asdf-vm/asdf) version manager, [nvm](https://github.com/nvm-sh/nvm) (superfluous, can be replaced by asdf), [uv](https://docs.astral.sh/uv/) package and project manager.org/).dev/). It should be saved under `$HOME`
+[Zsh](https://www.zsh.org/) configuration. Requires [Oh My Zsh](https://ohmyz.sh/) and (optionally) [Glow](https://github.com/charmbracelet/glow). Its `yt-dlp` helpers require Node.js 22 or newer. It contains configurations for the [asdf](https://github.com/asdf-vm/asdf) version manager, [nvm](https://github.com/nvm-sh/nvm) (superfluous, can be replaced by asdf), [uv](https://docs.astral.sh/uv/) package and project manager.org/).dev/). It should be saved under `$HOME`
 
 ## `kitty.conf`
 

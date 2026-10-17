@@ -263,14 +263,14 @@ alias dropcache='sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"' # Free up
 
 ## yt-dlp
 _ytdlp() {
-  local bun_bin="${commands[bun]:-$HOME/.bun/bin/bun}"
+  local node_bin="${commands[node]}"
 
-  if [[ ! -x "$bun_bin" ]]; then
-    print -u2 "yt-dlp: Bun was not found"
+  if [[ -z "$node_bin" || ! -x "$node_bin" ]]; then
+    print -u2 "yt-dlp: Node.js was not found"
     return 1
   fi
 
-  command yt-dlp --js-runtimes "bun:$bun_bin" "$@"
+  command yt-dlp --no-js-runtimes --js-runtimes "node:$node_bin" "$@"
 }
 
 yt-dlp_mp3() {
@@ -421,12 +421,6 @@ add-zsh-hook chpwd python_venv
 # Run once at shell startup to handle the initial directory
 python_venv
 ## /Python
-
-## Bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-export DO_NOT_TRACK=1
-## /Bun
 
 ## asdf version manager
 export ASDF_DIR="$HOME/.asdf"
