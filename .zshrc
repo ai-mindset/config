@@ -75,8 +75,9 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git colored-man-pages)
+plugins=(git colored-man-pages golang)
 
+fpath=("$HOME/.zsh/completion" $fpath)
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -114,6 +115,10 @@ export PATH="$HOME/AppImages:$PATH"
 
 # DuckDB
 export PATH="$HOME/.duckdb/cli/latest:$PATH"
+
+# Go toolchain and binaries installed with `go install`.
+export PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"
+export GOTELEMETRY=0
 
 # Neovim
 alias nvim="$HOME/AppImages/nvim-linux-x86_64.appimage"
@@ -685,14 +690,6 @@ az-logs() {
 ## /Azure products
 
 ## Completion
-fpath=("$HOME/.zsh/completion" $fpath)
-# Zsh speedup - Smarter completion initialization
-autoload -Uz compinit
-if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' "$HOME/.zcompdump" 2>/dev/null)" ]; then
-    compinit
-else
-    compinit -C
-fi
 # Complete external git-* subcommands
 zstyle ':completion:*:*:git:*' user-commands ${${(k)commands[(I)git-*]}#git-}
 ## /Completion
