@@ -364,6 +364,35 @@ compdef _epub2md epub2md
 ## Python
 # uv uvx
 export PATH="$HOME/.local/bin:$PATH"
+
+ensure_firacode_nerd_font() {
+  [[ -n ${SSH_CONNECTION:-} ]] && return 0
+
+  local font_dir="$HOME/.local/share/fonts"
+  local font_file="$font_dir/FiraCodeNerdFontMono-Regular.ttf"
+  [[ -s "$font_file" ]] && return 0
+
+  command -v curl >/dev/null 2>&1 || return 1
+  command -v fc-cache >/dev/null 2>&1 || return 1
+  mkdir -p "$font_dir" || return 1
+
+  local download_file
+  download_file="$(mktemp "$font_dir/.FiraCodeNerdFontMono-Regular.XXXXXX")" || return 1
+  if curl -fsSL --connect-timeout 5 --max-time 20 \
+    'https://raw.githubusercontent.com/ryanoasis/nerd-fonts/v3.5.1/patched-fonts/FiraCode/FiraCodeNerdFontMono-Regular.ttf' \
+    -o "$download_file"; then
+    if ! mv "$download_file" "$font_file"; then
+      rm -f "$download_file"
+      return 1
+    fi
+    fc-cache -f "$font_dir"
+  else
+    rm -f "$download_file"
+    return 1
+  fi
+}
+ensure_firacode_nerd_font
+
 # Fix completions for uv run https://github.com/astral-sh/uv/issues/8432#issuecomment-2867318195
 function _uv_run_mod() {
     if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
