@@ -264,6 +264,24 @@ grep -q 'opencode' ~/.bashrc 2>/dev/null || echo 'export PATH="$HOME/.local/bin:
 echo "\n🐜 Installing Desert Ant"
 curl -fsSL https://raw.githubusercontent.com/Desert-Ant-Labs/desert-ant-cli/main/install.sh | sh
 
+echo "\n📜 Installing Jac"
+curl -fsSL https://jaclang.org/install.sh | bash
+export PATH="$HOME/.local/bin:$PATH"
+jac --version
+
+echo "\n🐍 Installing uv (Astral) as the Python toolchain"
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.local/bin:$PATH"
+uv --version
+
+echo "\n🎲 Installing Strands Decider"
+DECIDER_VENV="$ADMIN_HOME/.venvs/strands-decider"
+uv venv --python 3.13 "$DECIDER_VENV"
+uv pip install --python "$DECIDER_VENV/bin/python" strands-decider
+"$DECIDER_VENV/bin/strands-decider" ask StrandsAgents/strands-decider-2B-qwen3.5-v1-2610 \
+    --state "Strands Decider install self-test." \
+    --noul "Is this a self-test?"
+
 if sudo systemctl list-unit-files auto-suspend.timer --no-legend 2>/dev/null |
     grep -q '^auto-suspend.timer'; then
     echo "\n😴 Disabling the legacy auto-suspend timer"
