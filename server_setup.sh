@@ -97,7 +97,7 @@ if [[ -z "$WIFI_DEVICE" || -z "$SERVER_MAC" || -z "$SERVER_ADDRESS" ]]; then
 fi
 
 echo "\n🔒 Installing and hardening SSH"
-sudo dnf install -y openssh-clients openssh-server firewalld
+sudo dnf install -y openssh-clients openssh-server firewalld ffmpeg
 
 PUBLIC_KEY_TEMP="$(mktemp)"
 SSH_CONFIG_TEMP="$(mktemp)"
@@ -260,6 +260,9 @@ echo "\n💻 Installing OpenCode"
 curl -fsSL https://opencode.ai/install | bash
 export PATH="$HOME/.local/bin:$PATH"
 grep -q 'opencode' ~/.bashrc 2>/dev/null || echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+echo "\n🐜 Installing Desert Ant"
+curl -fsSL https://raw.githubusercontent.com/Desert-Ant-Labs/desert-ant-cli/main/install.sh | sh
 
 if sudo systemctl list-unit-files auto-suspend.timer --no-legend 2>/dev/null |
     grep -q '^auto-suspend.timer'; then
