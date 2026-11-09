@@ -6,6 +6,9 @@ allow_login_shell = false
 
 personality = "pragmatic"
 web_search = "cached"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "xhigh"
+service_tier = "default"
 
 [analytics]  
 enabled = false  
@@ -33,6 +36,12 @@ glob_scan_max_depth = 8
 "**/.env" = "deny"
 "**/.env.*" = "deny"
 "**/*.env" = "deny"
+"**/deployment.dev.json" = "deny"
+"**/policy.json" = "deny"
 
 [permissions.workspace-no-env.network]
 enabled = false
+
+[tui]
+session_picker_view = "comfortable"
+screen_reader_detection_done = true
