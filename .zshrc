@@ -159,6 +159,7 @@ task p
 ## /task
 
 ## poke
+export GITHUB_TOKEN="$(secret-tool lookup application poke host github.com)"
 poke-sync() {
   local token
   if ! token="$(secret-tool lookup application poke host github.com)"; then
@@ -568,11 +569,15 @@ export DISABLE_TELEMETRY=1
  fi
 ## /Codex
 
-## Node Version Manager
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-## /Node Version Manager
+## Ende 
+export ENDE_INSTALL_ROOT="$HOME/.ende"
+export PATH="$ENDE_INSTALL_ROOT/bin:$PATH"
+## /Ende
+
+## Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+## /Bun
 
 ## Azure products
 # https://github.com/Azure/azure-functions-core-tools?tab=readme-ov-file#telemetry
