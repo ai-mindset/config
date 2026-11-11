@@ -569,11 +569,6 @@ export DISABLE_TELEMETRY=1
  fi
 ## /Codex
 
-## Ende 
-export ENDE_INSTALL_ROOT="$HOME/.ende"
-export PATH="$ENDE_INSTALL_ROOT/bin:$PATH"
-## /Ende
-
 ## Bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
