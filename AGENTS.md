@@ -29,25 +29,37 @@ For an AI agent:
 3. Ask the user about consequential details that cannot be inferred safely.
 4. Preserve useful generic rules only when they apply to this repository and do
    not conflict with verified project practice.
-5. Keep the root file compact and repository-wide. Move specialized guidance
-   into linked playbooks or nested instruction files recognized by the target
-   agent runtime.
-6. Confirm which features the target runtime supports, including instruction
-   discovery, nested overrides, mid-run steering, task ledgers, and subagents.
-7. Replace vague aspirations with concrete, observable instructions and checks.
-8. Remove this setup comment after customization.
+5. Keep all required operating guidance in this root file. Put specialized
+   workflows in clearly scoped subsections with explicit triggers, methods,
+   tools or commands, required evidence, and fallback or stop conditions.
+6. When replacing existing skill files, playbooks, or nested guides, migrate
+   their applicable prerequisites, procedures, checks, and stop conditions into
+   this file. Replace skill-invocation shortcuts with explicit steps and resolve
+   skill-relative paths and variables into verified paths and inputs. Preserve
+   supporting scripts and assets, and document their use here.
+7. Verify which repository instruction sources the target runtime actually loads
+   at the root and relevant subdirectories. Resolve obsolete or conflicting
+   repository instruction sources within the task's authorized scope; report
+   any unresolved conflicts. Confirm that the root AGENTS.md loads and that
+   optional features used, such as mid-run steering, task ledgers, or subagents,
+   are supported. Do not require a skill loader or nested instruction discovery.
+8. Replace vague aspirations with concrete, observable instructions and checks.
+   Name verified repository tools and commands where applicable.
+9. Remove this setup comment after customization.
 
 Before finishing:
 - Search for unresolved placeholders with:
   `rg -n '\{\{[^}]+\}\}' AGENTS.md`
-- Verify every documented command from the repository root.
+- Verify documented commands from their stated working directories using
+  bounded checks or an authorized disposable environment. Record commands that
+  cannot safely be exercised.
 - Confirm every referenced path exists.
 - Remove examples and sections that are not relevant.
-- Remove duplicated rules and keep enough instruction budget for narrower
-  guidance. Prefer links to detailed playbooks over embedding long workflows.
+- Remove duplicated rules. Keep required operating instructions inline;
+  references to documentation and scripts must not hide additional agent rules.
 - Check the final size with `wc -c AGENTS.md` against the active runtime's
   instruction limit. Codex project-file discovery defaults to 32 KiB; leave
-  ample headroom for nested guidance. Other runtimes may differ.
+  ample headroom for global guidance. Other runtimes may differ.
 - Do not include secrets, credentials, or private environment values.
 -->
 
@@ -77,18 +89,23 @@ Before finishing:
   {{DO_NOT_EDIT_PATHS_OR_NONE}}
 - Rules for adding files at the repository root:
   {{ROOT_FILE_RULES_OR_REMOVE_BULLET}}
-- Nested agent instructions: {{NESTED_INSTRUCTION_FILES_OR_NONE}}
-- Tool-specific instruction adapters: {{TOOL_SPECIFIC_ADAPTER_PATHS_OR_NONE}}
-- Skills or longer playbooks: {{SKILLS_OR_PLAYBOOKS_PATH_OR_NONE}}
 - Long-running task ledger: {{TASK_LEDGER_PATH_OR_NONE}}
 
-## Agent compatibility
+## Instruction ownership and compatibility
 
-- Keep core guidance model- and vendor-neutral. Use instruction overrides,
-  mid-run steering, persistent task files, or subagents only when the active
-  runtime supports them and the task authorizes them.
-- When several agent tools share this repository, keep one canonical policy
-  here and use small tool-specific adapters rather than duplicating rules.
+- Keep all required repository-specific operating instructions in this root
+  AGENTS.md, including specialized workflows with explicit applicability.
+  Agents must be able to follow the repository workflow without separate skill
+  files, playbooks, or nested instruction files.
+- Read relevant source files, documentation, standards, and tool help for facts
+  and supported usage. Scripts may implement checks; state when to run them and
+  what constitutes success here.
+- Apply scoped workflows only when their triggers match. Generic method
+  defaults fill gaps; scoped workflows do not waive applicable safety rules or
+  required quality gates.
+- Keep guidance model- and vendor-neutral. Respect higher-priority runtime
+  instructions and the user's current scope. Use optional runtime features only
+  when supported and authorized; do not make them prerequisites for routine work.
 
 ## Safety and scope
 
@@ -137,6 +154,54 @@ repository evidence, and required checks. Make completion observable:
 For a well-scoped task, complete proportionate inspection, implementation,
 verification, and handoff without asking for confirmation between routine steps.
 Ask only when a condition in **Ask before you assume** applies.
+
+## Professional methods and tools
+
+Apply established professional methods for the field relevant to each part of
+the task. Choose tools for the evidence and capabilities the work requires.
+
+- Identify the relevant discipline, outcome, constraints, and likely failure
+  modes. Reassess the approach when the task crosses into another discipline.
+- Ground unfamiliar or consequential method and tool choices in authoritative
+  sources such as professional standards, primary research, official
+  documentation, or documented practitioner workflows. Verify current guidance
+  when it could affect the choice. Distinguish evidence of suitability from
+  popularity and marketing claims.
+- Inspect relevant project tooling and the runtime's available capabilities before
+  improvising. Verify unfamiliar tool interfaces through documentation or help.
+  Prefer established specialist tools over ad hoc implementations when they
+  improve accuracy, efficiency, or reproducibility. Choose the simplest adequate
+  approach, considering compatibility, setup cost, and the task's scale and
+  stakes. Use existing project tools when they meet those needs.
+- Apply the workflow that makes the tool useful: use appropriate inputs and
+  configuration, check assumptions, and inspect actual outputs. Reassess the
+  method when observations contradict its assumptions. When execution is part
+  of the task, use the available, authorized tools to perform the work rather
+  than only recommending them or describing expected results.
+- Validate the deliverable against its acceptance criteria and likely failure
+  modes, using an independent check where practical. Scale verification effort
+  to the task's risk; the task-specific defaults below describe useful checks.
+- If a preferred tool is unavailable, use an adequate alternative and report
+  material limitations. Ask for missing access or capability only when needed
+  to complete the task reliably. Report material method and tool choices with
+  verification evidence; never imply a tool was used when it was not.
+
+### Task-specific methods and evidence
+
+Apply only the rows relevant to the requested work. Use verified project
+commands from **Commands and quality gates** where applicable. For other fields,
+select an established method and tool, identify its assumptions and failure
+modes, and define the evidence needed to judge the result. Routine work does
+not require a separate tool-selection report.
+
+| Task | Method and tool capability | Required evidence |
+| ---- | -------------------------- | ----------------- |
+| Bug or reliability investigation | Reproduce the failure; isolate the cause with focused tests and, where useful, a debugger, logs, or traces. | A reproduction, an explanation supported by observations, and a regression check when practical. |
+| Performance change | Establish a baseline; use a profiler or benchmark to locate the bottleneck before optimizing. | Comparable before-and-after measurements with the workload and conditions identified. |
+| Numerical or data work | Use computational tools appropriate to the data; check units, missing values, sampling, and model assumptions where relevant. | Reproducible calculations, reconciled totals or independent spot checks, and relevant uncertainty or limitations. |
+| UI or visual work | Use the actual browser or native renderer; inspect interaction, layout, and accessibility in relevant states. | Inspection of the rendered result and relevant interactions; source inspection alone does not verify appearance or usability. |
+| Research or factual recommendation | Read authoritative original sources; check dates and applicability, and corroborate consequential claims where feasible. | Traceable citations, clear separation of facts and inference, and disclosure of material conflicts or uncertainty. |
+| Generated document, media, or structured file | Use appropriate format-aware tools to create, parse, render, or play the actual output. | A usable artifact with structural checks and visual or playback inspection where relevant; report any checks that could not be performed. |
 
 ## Workflow
 
@@ -200,6 +265,25 @@ row says otherwise.
 A change is complete only when applicable gates pass. Never report a red or
 unrun required gate as successful; state what failed or could not be run.
 
+## Repository-specific workflows
+
+<!--
+Optional: repeat the subsection below for recurring workflows that need more
+detail than the general rules and command table provide. Remove this section
+when none apply. Fill it with verified procedures; do not invent workflows to
+populate the template or require another instruction file to explain the steps.
+-->
+
+### {{WORKFLOW_NAME}}
+
+- Applies when: {{WORKFLOW_TRIGGER_AND_SCOPE}}
+- Prerequisites and inputs: {{WORKFLOW_PREREQUISITES_AND_INPUTS}}
+- Method and execution:
+  {{WORKFLOW_STEPS_WITH_VERIFIED_TOOLS_COMMANDS_AND_WORKING_DIRECTORIES}}
+- Required outputs and verification:
+  {{WORKFLOW_OUTPUTS_AND_ACCEPTANCE_CHECKS}}
+- Fallback or stop conditions: {{WORKFLOW_FALLBACK_AND_STOP_CONDITIONS}}
+
 ## Languages and frameworks
 
 | Scope                                    | Language, framework, and version                 | Authoritative configuration            |
@@ -217,7 +301,7 @@ unrun required gate as successful; state what failed or could not be run.
 - Use an escape hatch only when it is unavoidable and document the concrete
   reason or upstream issue.
 - Language- or framework-specific rules:
-  {{LANGUAGE_AND_FRAMEWORK_RULES_OR_NESTED_AGENTS_PATH}}
+  {{LANGUAGE_AND_FRAMEWORK_RULES_OR_REMOVE_BULLET}}
 
 ## Naming and domain language
 
@@ -395,12 +479,12 @@ of editing this file as an unrelated side effect.
 When adding a rule within the authorized task:
 
 1. Write one imperative rule describing the correct behaviour.
-2. Move long workflows into a skill or playbook and link them here.
-3. Put specialized rules in the nearest supported nested instruction file.
+2. For a workflow, state its trigger, method and tools or commands, required
+   evidence, and fallback or stop conditions in a scoped subsection here.
+3. Update existing guidance instead of creating a parallel instruction source.
 4. Mention the instruction update in the summary.
 
-Keep this root file focused on repository-wide guidance. Remove stale rules and
-examples.
+Keep this root file self-contained and concise. Remove stale rules and examples.
 
 ## Failure log
 
