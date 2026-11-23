@@ -1,0 +1,35 @@
+#compdef odin
+
+local -a flags
+local line
+
+if (( CURRENT == 2 )); then
+  compadd build run bundle check test doc strip-semicolon \
+    version report root help
+  return
+fi
+
+case "$words[CURRENT]" in
+  -o:*)
+    compset -P '-o:'
+    compadd none minimal size speed aggressive
+    ;;
+  -out:*)
+    compset -P '-out:'
+    _files
+    ;;
+  -*)
+    for line in "${(@f)$(command odin "$words[2]" -help 2>/dev/null)}"; do
+      if [[ $line =~ '^[[:space:]]+(-[[:alnum:]][[:alnum:]-]*:?)' ]]; then
+        flags+=("$match[1]")
+      fi
+    done
+    flags=("${(@u)flags}")
+    # Flags taking values retain their trailing colon.
+    compadd -S '' -- ${(M)flags:#*:}
+    compadd -- ${flags:#*:}
+    ;;
+  *)
+    _files -g '*.odin'
+    ;;
+esac
