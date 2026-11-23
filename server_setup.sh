@@ -276,11 +276,39 @@ uv --version
 
 echo "\n🎲 Installing Strands Decider"
 DECIDER_VENV="$ADMIN_HOME/.venvs/strands-decider"
+DECIDER_MODEL="StrandsAgents/strands-decider-2B-qwen3.5-v1-2610"
 uv venv --python 3.13 "$DECIDER_VENV"
 uv pip install --python "$DECIDER_VENV/bin/python" strands-decider
-"$DECIDER_VENV/bin/strands-decider" ask StrandsAgents/strands-decider-2B-qwen3.5-v1-2610 \
+"$DECIDER_VENV/bin/strands-decider" ask "$DECIDER_MODEL" \
     --state "Strands Decider install self-test." \
     --noul "Is this a self-test?"
+
+echo "\n🎲 Configuring Strands Decider systemd service"
+sudo tee /etc/systemd/system/strands-decider.service > /dev/null <<EOF
+[Unit]
+Description=Strands Decider HTTP API
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=exec
+User=$ADMIN_USER
+WorkingDirectory=$ADMIN_HOME
+ExecStart="$DECIDER_VENV/bin/strands-decider" serve $DECIDER_MODEL --host 127.0.0.1 --port 8000
+# Wait for model loading before reporting a successful start.
+ExecStartPost=/usr/bin/curl --noproxy "*" --fail --silent --show-error --output /dev/null --retry 120 --retry-connrefused --retry-delay 2 --retry-max-time 270 --connect-timeout 2 --max-time 5 http://127.0.0.1:8000/health
+TimeoutStartSec=5min
+Environment="PYTHONUNBUFFERED=1"
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable strands-decider
+sudo systemctl restart strands-decider
 
 if sudo systemctl list-unit-files auto-suspend.timer --no-legend 2>/dev/null |
     grep -q '^auto-suspend.timer'; then
@@ -295,4 +323,5 @@ echo "   Reserve the server address for this MAC in the router."
 echo "   Keep the admin client's $ADMIN_CLIENT_CIDR address reserved too."
 echo "   Verify the host key here: sudo ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub"
 echo "   Connect from the admin client: ssh $ADMIN_USER@${SERVER_ADDRESS%/*}"
+echo "   Strands Decider health:   http://127.0.0.1:8000/health (on the server or through the SSH tunnel)"
 echo "   Tunnel servers when needed:   ssh -N -T -o ExitOnForwardFailure=yes -L 127.0.0.1:11434:127.0.0.1:11434 -L 127.0.0.1:8080:127.0.0.1:8080 -L 127.0.0.1:8000:127.0.0.1:8000 $ADMIN_USER@${SERVER_ADDRESS%/*}"
